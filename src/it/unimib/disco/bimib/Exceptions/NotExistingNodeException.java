@@ -11,7 +11,7 @@
  * 
  */
 
-package GRNException;
+package it.unimib.disco.bimib.Exceptions;
 
 
 public class NotExistingNodeException extends Exception {

@@ -14,10 +14,11 @@
 
 package it.unimib.disco.bimib.Functions;
 
+// System imports
 import java.util.ArrayList;
 
-import GRNException.InputTypeException;
-import GRNException.ParamDefinitionException;
+// GRNSim imports
+import it.unimib.disco.bimib.Exceptions.*;
 
 public interface Function {
 
