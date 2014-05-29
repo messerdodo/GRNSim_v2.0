@@ -19,23 +19,23 @@ public class Console {
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		
-		Properties inputArgs, inputFeatures;
+		Properties inputArgs, taskFeatures, simulationFeatures;
 		
 		try{
 			//Converts the input arguments from a string array to a properties object.
 			inputArgs = Input.readInputArguments(args);
 			
 			//The input features file must be specified.
-			if(!inputArgs.containsKey(ConsoleConstants.INPUT_FEATURES_FILE))
-				throw new InputFormatException("The input features file must be "
-						+ "specified using the " + ConsoleConstants.INPUT_FEATURES_FILE + " key");
+			if(!inputArgs.containsKey(ConsoleConstants.TASK_FEATURES_FILE))
+				throw new InputFormatException("The task features file must be "
+						+ "specified using the " + ConsoleConstants.TASK_FEATURES_FILE + " key");
 			//Reads the input features file.
-			inputFeatures = Input.readInputFeatures(
-					inputArgs.getProperty(ConsoleConstants.INPUT_FEATURES_FILE));
+			taskFeatures = Input.readTaskFeatures(
+					inputArgs.getProperty(ConsoleConstants.TASK_FEATURES_FILE));
 			
 			//Displays a operation successfully completed message
 			System.out.println("Input features correctly read at \'" 
-					+ inputArgs.getProperty(ConsoleConstants.INPUT_FEATURES_FILE) + "\'");
+					+ inputArgs.getProperty(ConsoleConstants.TASK_FEATURES_FILE) + "\'");
 			
 			//Reads the operation to perform: This key MUST be specified.
 			if(!inputArgs.containsKey(ConsoleConstants.OPERATION_TO_PERFORM))

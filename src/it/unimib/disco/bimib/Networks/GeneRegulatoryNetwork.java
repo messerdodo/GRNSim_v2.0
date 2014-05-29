@@ -14,7 +14,9 @@ package it.unimib.disco.bimib.Networks;
 import java.util.ArrayList;
 import java.util.List;
 
-
+//GRNSim imports
+import it.unimib.disco.bimib.Exceptions.*;
+import it.unimib.disco.bimib.Functions.Function;
 
 public interface GeneRegulatoryNetwork {
 

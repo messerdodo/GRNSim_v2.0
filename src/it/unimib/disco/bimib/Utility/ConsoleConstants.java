@@ -9,9 +9,14 @@ package it.unimib.disco.bimib.Utility;
 public class ConsoleConstants {
 
 	/**
-	 * This keyword is used in order to specify the input features file.
+	 * This keyword is used in order to specify the simulation features file.
 	 */
-	public static String INPUT_FEATURES_FILE = "-f";
+	public static String SIMULATION_FEATURES_FILE = "-f";
+	
+	/**
+	 * This keyword is used in order to specify the task features file.
+	 */
+	public static String TASK_FEATURES_FILE = "-t";
 	
 	/**
 	 * This keyword is used in order to specify the simulation to perform
