@@ -18,4 +18,9 @@ public class TaskFeaturesConstants {
 	 */
 	public static String NETWORK_CREATION = "network-creation";
 	
+	/**
+	 * This value specifies the number of threads to use
+	 */
+	public static String THREADS = "threads";
+	
 }

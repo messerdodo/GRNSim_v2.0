@@ -1,0 +1,27 @@
+<simulation features file>
+topology PartiallyRandom
+fixed-inputs-number 2
+nodes 200
+edges 400
+completely-defined-functions yes
+function-type Boolean
+random-type 1
+bias-type 0
+bias-value 0.5
+or-type 0
+and-type 0
+canalized-type 0
+sampling-method Partial
+mutation-type Flip
+initial-conditions 10000
+ratio-of-states-to-perturb 1
+how-many-nodes-to-perturb 1 
+how-many-perturb-exp 200
+max-net-to-test 1000
+matching-networks 1
+min-duration-of-perturb 100
+max-duration-of-perturb 100
+max-simulation-times 10000
+unmatching-store no
+excludes-target-genes 88
+excludes-source-genes 88

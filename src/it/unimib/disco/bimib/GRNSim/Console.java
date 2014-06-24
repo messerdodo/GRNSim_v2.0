@@ -25,22 +25,30 @@ public class Console {
 			//Converts the input arguments from a string array to a properties object.
 			inputArgs = Input.readInputArguments(args);
 			
-			//The input features file must be specified.
+			//The task features file must be specified.
 			if(!inputArgs.containsKey(ConsoleConstants.TASK_FEATURES_FILE))
 				throw new InputFormatException("The task features file must be "
 						+ "specified using the " + ConsoleConstants.TASK_FEATURES_FILE + " key");
-			//Reads the input features file.
+			//Reads the task features file.
 			taskFeatures = Input.readTaskFeatures(
 					inputArgs.getProperty(ConsoleConstants.TASK_FEATURES_FILE));
 			
 			//Displays a operation successfully completed message
-			System.out.println("Input features correctly read at \'" 
+			System.out.println("Task features correctly read at \'" 
 					+ inputArgs.getProperty(ConsoleConstants.TASK_FEATURES_FILE) + "\'");
 			
-			//Reads the operation to perform: This key MUST be specified.
-			if(!inputArgs.containsKey(ConsoleConstants.OPERATION_TO_PERFORM))
-				throw new InputFormatException("The operation to perform must be "
-						+ "specified using the " + ConsoleConstants.OPERATION_TO_PERFORM + " key");
+			//The simulation features file must be specified.
+			if(!inputArgs.containsKey(ConsoleConstants.SIMULATION_FEATURES_FILE))
+				throw new InputFormatException("The simulation features file must be "
+						+ "specified using the " + ConsoleConstants.SIMULATION_FEATURES_FILE + " key");
+			//Reads the simulation features file.
+			simulationFeatures = Input.readSimulationFeatures(
+					inputArgs.getProperty(ConsoleConstants.SIMULATION_FEATURES_FILE));
+			
+			//Displays a operation successfully completed message
+			System.out.println("Input features correctly read at \'" 
+					+ inputArgs.getProperty(ConsoleConstants.SIMULATION_FEATURES_FILE) + "\'");
+			
 			
 		}catch(Exception ex){
 			//Displays the exception message
@@ -51,4 +59,14 @@ public class Console {
 		} 
 	}
 
+	
+	
+	
+	/*private void networkCreation(Properties simulationFeatures){
+		
+	}*/
+	
+	
+	
+	
 }
