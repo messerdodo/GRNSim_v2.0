@@ -4,6 +4,7 @@ package it.unimib.disco.bimib.Utility;
  * This class contains all the constants used in the task features file.
  * @author Andrea Paroni (a.paroni@campus.unimib.it)
  * @group BIMIB @ DISCo (Department of Information Technology, Systems and Communication) of Milan University - Bicocca 
+ * @year 2014
  */
 
 public class TaskFeaturesConstants {

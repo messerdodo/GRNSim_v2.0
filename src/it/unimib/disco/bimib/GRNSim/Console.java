@@ -4,6 +4,7 @@ package it.unimib.disco.bimib.GRNSim;
  * This class is the console application entry point.
  * @author Andrea Paroni (a.paroni@campus.unimib.it)
  * @group BIMIB @ DISCo (Department of Information Technology, Systems and Communication) of Milan University - Bicocca 
+ * @year 2014
  */
 
 //GRNSim imports

@@ -7,7 +7,7 @@ package it.unimib.disco.bimib.Networks;
  * @author Andrea Paroni (a.paroni@campus.unimib.it)
  * @author Giorgia Previtali (g.previtali6@campus.unimib.it)
  * @group BIMIB @ Disco (Department of Information Technology, Systems and Communication) of Milan University - Bicocca
- * 
+ * @year 2013
  */
 
 //System imports
@@ -125,6 +125,17 @@ public interface GeneRegulatoryNetwork {
 	 * @throws NotExistingNodeException 
 	 */
 	public void addRandomEdges(int newEdges, ArrayList<String> noSource, ArrayList<String> noTarget) throws ParamDefinitionException, NotExistingNodeException;
+
+	/**
+	 * This method adds newEdges random edges to the graph
+	 * @param newEdges: the number of new edges to be added.
+	 * @param noSource: An array containing the ids of the nodes that can not be a source.
+	 * @param noTarget: An array containing the ids of the nodes that can not be a target.
+	 * @param fixedInputNumber: An integer that defines the number of incoming edge for each node.
+	 * @throws ParamDefinitionException 
+	 * @throws NotExistingNodeException 
+	 */
+	public void addRandomEdges(int newEdges, ArrayList<String> noSource, ArrayList<String> noTarget, int fixedInputNumber) throws ParamDefinitionException, NotExistingNodeException;
 
 	/**
 	 * This method adds a function in a node.
