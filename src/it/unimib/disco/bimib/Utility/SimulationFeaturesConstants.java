@@ -191,4 +191,137 @@ public class SimulationFeaturesConstants {
 	 * Excludes the passed genes as target.
 	 */
 	public static final String EXCLUDES_TARGET_GENES = "excludes-target-genes";
+	
+	/**
+	 * Sampling method key. This key is used in order to define the
+	 * chosen sampling method. For the corresponding value see the 
+	 * 'SamplingMethodType' enumeration file.
+	 * Note: this key is mandatory.
+	 */
+	public static final String SAMPLING_METHOD = "sampling-method";
+	
+	/**
+	 * This key is used in order to specify the brute force sampling method.
+	 */
+	public static final String BRUTE_FORCE = "BruteForce";
+	
+	/**
+	 * This key is used in order to specify the partial sampling method.
+	 */
+	public static final String PARTIAL_SAMPLING = "Partial";
+	
+	/**
+	 * Initial conditions number key. This value, that must be integer and less than 2^nodes_number, 
+	 * indicates the number of random initial conditions to test. 
+	 */
+	public static final String INITIAL_CONDITIONS = "initial-conditions";
+	
+	/**
+	 * Max simulation times key. This value, that must be integer and greater than 0, is a cutoff value
+	 * for the attractors searching.
+	 */
+	public static String MAX_SIMULATION_TIMES = "max-simulation-times";
+	
+	/**
+	 * Number of perturb experiments key. This value, that must be integer, indicates the number of perturbation 
+	 * will be done in each experiment.
+	 */
+	public static final String HOW_MANY_PERTURB_EXP = "how-many-perturb-exp";
+	
+	/**
+	 * Mutation type key. It is uses in order to define the mutations type.
+	 * The corresponding value must be custom or random in the mutation 
+	 * features file or must be Flip or Temporary in the simulation features
+	 * file. See 'MutationType' enumeration file for more information. 
+	 */
+	public static final String MUTATION_TYPE = "mutation-type";
+
+	/**
+	 * Custom mutation type value.
+	 */
+	public static final String CUSTOM_MUTATION = "custom";
+
+	/**
+	 * Random mutation type value.
+	 */
+	public static final String RANDOM_MUTATION = "random";
+
+	/**
+	 * Perpetual type key. 
+	 * It used in order to define the perpetual mutations rate.
+	 */
+	public static final String PERPETUAL_TYPE = "perpetual-type";
+
+	/**
+	 * Mutated nodes key. 
+	 * It is used in order to define the number of nodes which must be mutated.
+	 */
+	public static final String HOW_MANY_NODES_TO_PERTURB = "how-many-nodes-to-perturb";
+
+	/**
+	 * Knock in rate key. It is used in order to define the rate of 
+	 * the gene knock in functions for the perpetual mutations.
+	 */
+	public static final String KNOCKIN_RATE = "knockIn-rate";
+
+	/**
+	 * Knock in value. It is used for defining a knock in mutation.
+	 */
+	public static final String KNOCK_IN = "knockIn";
+
+	/**
+	 * Mutation effect key. It is used in order to define the effect of the 
+	 * specific mutation. The corresponding value must be knockIn or knockOut.
+	 */
+	public static final String MUTATION_EFFECT = "mutation-effect";
+
+	/**
+	 * Knock out value. It is used for defining a knock out mutation.
+	 */
+	public static final String KNOCK_OUT = "knockOut";
+
+	/**
+	 * Mutation rate key. It is used in order to define the ratio of the states 
+	 * in the attractor to be mutated.
+	 */
+	public static final String RATIO_OF_STATES_TO_PERTURB = "ratio-of-states-to-perturb";
+	
+	/**
+	 * Mutation strength key. It is used in order to define the power of the mutation.
+	 * The corresponding value must be Perpetual or Temporary.
+	 */
+	public static final String MUTATION_STRENGTH = "mutation-strength";
+
+
+	/**
+	 * Minimum duration of perturb key. It is used in order to define
+	 * the minimum simulation times in which the temporary mutation will be 
+	 * active. The corresponding value must be a positive integer.
+	 */
+	public static final String MIN_DURATION_OF_PERTURB = "min-duration-of-perturb";
+
+	/**
+	 * Maximum duration of perturb key. It is used in order to define
+	 * the maximum simulation times in which the temporary mutation will be 
+	 * active. The corresponding value must be a positive integer.
+	 */
+	public static final String MAX_DURATION_OF_PERTURB = "max-duration-of-perturb";
+	
+	/**
+	 * This key defines a Flip mutation
+	 */
+	public static final String FLIP_MUTATIONS = "Flip";
+	
+	/**
+	 * This key defines a Temporary mutation
+	 */
+	public static final String TEMPORARY_MUTATIONS = "Temporary";
+	
+	/**
+	 * This key defines a Perpetual mutation
+	 */
+	public static final String PERPETUAL_MUTATIONS = "Perpetual";
+	
+	
+	
 }

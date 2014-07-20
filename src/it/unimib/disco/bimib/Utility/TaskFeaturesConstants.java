@@ -20,8 +20,14 @@ public class TaskFeaturesConstants {
 	public static String NETWORK_CREATION = "network-creation";
 	
 	/**
-	 * This value specifies the number of threads to use
+	 * This key specifies the number of threads to use
 	 */
 	public static String THREADS = "threads";
+	
+	/**
+	 * This key is used in order to specify the folder where the system stores
+	 * the outputs.
+	 */
+	public static String OUTPUT_FOLDER = "output-folder";
 	
 }

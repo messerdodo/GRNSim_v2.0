@@ -1,4 +1,4 @@
-package it.unimib.disco.bimib.threads;
+package it.unimib.disco.bimib.Threads;
 
 /**
  * This interface defines the methods of the notifying threads

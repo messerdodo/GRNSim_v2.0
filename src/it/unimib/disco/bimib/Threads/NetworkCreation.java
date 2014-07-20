@@ -1,41 +1,41 @@
-package it.unimib.disco.bimib.threads;
+package it.unimib.disco.bimib.Threads;
 
 //System imports
+import java.util.HashMap;
 import java.util.Properties;
 
 //GRNSim imports
 import it.unimib.disco.bimib.Networks.GraphManager;
-import it.unimib.disco.bimib.Utility.ConsoleConstants;
 
-public class NetworkCreation implements Runnable {
+public class NetworkCreation implements Task {
 
-	private ThreadListener threadListener;
 	private Properties simulationFeatures;
 	private GraphManager graphManager;
-	private int threadId;
+	private HashMap<String, String> outputs;
+	private String outputFolder;
 	
 	/**
 	 * Generic constructor
 	 * @param listener: thread listener object
 	 * @param simulationFeatures: Properties object with the simulation features
-	 * @param threadId: Numeric thread identifier
 	 */
-	public NetworkCreation(ThreadListener listener, Properties simulationFeatures, int threadId){
+	public NetworkCreation(Properties simulationFeatures, HashMap<String, String> outputs, String outputFolder){
 		//Parameters checking
-		if(listener == null)
-			throw new NullPointerException("The thread listener must be not null.");
 		if(simulationFeatures == null)
 			throw new NullPointerException("The simulation features must be not null.");
+		if(outputs == null)
+			throw new NullPointerException("The outputs object must be not null.");
+		if(outputFolder == null)
+			throw new NullPointerException("The output folder object must be not null.");
 		
-		this.threadListener = listener;
 		this.simulationFeatures = simulationFeatures;
 		this.graphManager = null;
-		this.threadId = threadId;
+		this.outputFolder = outputFolder;
+		this.outputs = outputs;
 	}
 	
-	
 	@Override
-	public void run() {
+	public void doTask() throws Exception{
 		
 		this.graphManager = new GraphManager();
 		
@@ -48,9 +48,6 @@ public class NetworkCreation implements Runnable {
 				System.out.println(ex);
 			else
 				System.out.println(ex.getMessage());
-		}finally{
-			//Calls the lister
-			this.threadListener.threadFinished(ConsoleConstants.NETWORK_CREATION_TASK, this.threadId);
 		}
 
 	}
