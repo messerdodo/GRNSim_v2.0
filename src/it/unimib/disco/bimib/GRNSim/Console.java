@@ -12,22 +12,28 @@ import it.unimib.disco.bimib.Exceptions.*;
 import it.unimib.disco.bimib.IO.Input;
 import it.unimib.disco.bimib.Threads.*;
 import it.unimib.disco.bimib.Utility.ConsoleConstants;
+import it.unimib.disco.bimib.Utility.SimulationFeaturesConstants;
 import it.unimib.disco.bimib.Utility.TaskFeaturesConstants;
-
 
 //System imports
 import java.util.Properties;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 public class Console {
 
 	public static void main(String[] args) {
 		
 		Properties inputArgs, taskFeatures, simulationFeatures;
-		int threads;
-		String taskToPerform, outputFolder;
-		ArrayList<Thread> runningThreads = new ArrayList<Thread>();
+		int threads, requiredNetworks;
+		String taskToPerform, outputFolder, originalGRNMLPath;
+		ArrayList<Thread> activeThreads = new ArrayList<Thread>();
+		
 		try{
 			//Converts the input arguments from a string array to a properties object.
 			inputArgs = Input.readInputArguments(args);
@@ -61,7 +67,7 @@ public class Console {
 				throw new MissingFeaturesException(TaskFeaturesConstants.THREADS + " key must be specified in the task features file.");
 			//Gets the number of thread to use in the simulation
 			threads = Integer.valueOf(taskFeatures.getProperty(TaskFeaturesConstants.THREADS));
-			
+		
 			//Gets the task to perform
 			if(!taskFeatures.containsKey(TaskFeaturesConstants.TASK_TO_PERFORM))
 				throw new MissingFeaturesException(TaskFeaturesConstants.TASK_TO_PERFORM + " key must be specified in the task features file."); 
@@ -72,11 +78,22 @@ public class Console {
 				throw new MissingFeaturesException(TaskFeaturesConstants.OUTPUT_FOLDER + " key must be specified in the task features file."); 
 			outputFolder = taskFeatures.getProperty(TaskFeaturesConstants.OUTPUT_FOLDER);
 			
-			
+			//Gets the number of required networks
+			if(!simulationFeatures.containsKey(SimulationFeaturesConstants.MATCHING_NETWORKS))
+				throw new MissingFeaturesException("The " + SimulationFeaturesConstants.MATCHING_NETWORKS + " key must be specified in the simulation features file.");
+			requiredNetworks = Integer.parseInt(simulationFeatures.getProperty(SimulationFeaturesConstants.MATCHING_NETWORKS));
 			
 			//Network creation
 			if(taskToPerform.equals(TaskFeaturesConstants.NETWORK_CREATION)){
-				networkCreation(simulationFeatures, threads, outputFolder, runningThreads);
+				networkCreation(activeThreads, simulationFeatures, threads, outputFolder, requiredNetworks);
+			}else if(taskToPerform.equals(TaskFeaturesConstants.NETWORK_MODIFICATION)){
+				//Gets the original network grnml file name.
+				if(!taskFeatures.containsKey(TaskFeaturesConstants.ORIGINAL_NETWORK_FILE))
+					throw new MissingFeaturesException(TaskFeaturesConstants.ORIGINAL_NETWORK_FILE + " key must be specified in the task features file."); 
+				originalGRNMLPath = taskFeatures.getProperty(TaskFeaturesConstants.ORIGINAL_NETWORK_FILE);
+				networkModification(activeThreads, simulationFeatures, threads, outputFolder, originalGRNMLPath, requiredNetworks);
+			}else{
+				throw new InputFormatException("Incorrect " + TaskFeaturesConstants.NETWORK_CREATION + " value in the task file.");
 			}
 			
 		}catch(Exception ex){
@@ -88,9 +105,8 @@ public class Console {
 			else
 				System.out.println(ex.getMessage());
 		}finally{
-			//Stops the generator and execution threads
-			for(int thread = 0; thread < runningThreads.size(); thread ++)
-				runningThreads.get(thread).interrupt();
+			//Closes all the tasks
+			
 		}
 	}
 
@@ -102,29 +118,41 @@ public class Console {
 	 * @param threads: Number of threads to use
 	 * @param outputFolder: Folder where place the output files.
 	 */
-	private static void networkCreation(Properties simulationFeatures, int threads, String outputFolder, ArrayList<Thread> runningThreads){
-		
-		//Executors creation
-		TasksQueue tasksQueue = new TasksQueue(10);
-		
+	private static void networkCreation(ArrayList<Thread> activeThreads , Properties simulationFeatures, int threads, String outputFolder, int requiredNetworks){
 		NetworkCreation creationTask = new NetworkCreation(simulationFeatures,new HashMap<String,String>(), outputFolder); 
-		
-		
-		
-		runningThreads.add(new TasksGenerator(tasksQueue, creationTask, "Task generator"));
+		TaskScheduler scheduler = new TaskScheduler(creationTask, requiredNetworks);
 		//Launches 'threads' executor threads
 		for(int thread = 0; thread < threads; thread ++){
-			runningThreads.add(new TasksExecutor(tasksQueue, "Executor " + (thread + 1)));
+			activeThreads.add(new TasksExecutor(scheduler, "Executor " + (thread + 1)));
+			activeThreads.get(thread).start();
 		}
-		
-		for(Thread thread : runningThreads){
-			thread.start();
-			System.out.println(thread.getName());
-		}
-		 
-		
+
 	}
 	
+	/**
+	 * Network modification task
+	 * @param simulationFeatures: Simulation features
+	 * @param threads: Number of threads to use
+	 * @param outputFolder: Folder where place the output files.
+	 * @param originalGRNMLPath: The path of the original GRNML file.
+	 * @throws NotExistingNodeException 
+	 * @throws IOException 
+	 * @throws SAXException 
+	 * @throws ParserConfigurationException 
+	 * @throws ParamDefinitionException 
+	 */
+	private static void networkModification(ArrayList<Thread> activeThreads, Properties simulationFeatures, int threads, String outputFolder, String originalGRNMLPath, int requiredNetworks) throws ParamDefinitionException, ParserConfigurationException, SAXException, IOException, NotExistingNodeException{
+
+		NetworkModificationTask editingTask = new NetworkModificationTask(simulationFeatures,new HashMap<String,String>(), outputFolder, originalGRNMLPath); 
+		TaskScheduler scheduler = new TaskScheduler(editingTask, requiredNetworks);
+		
+		//Launches 'threads' executor threads
+		for(int thread = 0; thread < threads; thread ++){
+			activeThreads.add(new TasksExecutor(scheduler, "Executor " + (thread + 1)));
+			activeThreads.get(thread).start();
+		}
+		
+	}
 	
 	
 	

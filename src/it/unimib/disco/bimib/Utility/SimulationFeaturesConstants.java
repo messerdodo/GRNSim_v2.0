@@ -322,6 +322,10 @@ public class SimulationFeaturesConstants {
 	 */
 	public static final String PERPETUAL_MUTATIONS = "Perpetual";
 	
+	/**
+	 * Number of matching network required key.
+	 */
+	public static final String MATCHING_NETWORKS = "matching-networks";
 	
 	
 }

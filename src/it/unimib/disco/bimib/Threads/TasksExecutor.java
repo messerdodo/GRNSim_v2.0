@@ -1,31 +1,55 @@
 package it.unimib.disco.bimib.Threads;
 
+/**
+ * This class is the task executor.
+ * It is a thread that executes the tasks stored in the tasks queue.
+ * @author Andrea Paroni (a.paroni@campus.unimib.it)
+ * @group BIMIB @ DISCo (Department of Information Technology, Systems and Communication) of Milan University - Bicocca 
+ * @year 2014
+ */
+
+import it.unimib.disco.bimib.Exceptions.TaskCompletedException;
+
+
+
+//System imports
+
 public class TasksExecutor extends Thread{
 
-	private  TasksQueue tasksQueue;
+	private  TaskScheduler scheduler;
 	
-	public TasksExecutor(TasksQueue tasksQueue, String threadName){
+	public TasksExecutor(TaskScheduler scheduler, String threadName){
 		super(threadName);
-		if(tasksQueue == null)
+		if(scheduler == null)
 			throw new NullPointerException("The tasks queue object must be not null.");
-		this.tasksQueue = tasksQueue;
+		this.scheduler = scheduler;
 	}
 	
 	@Override
 	public void run() {
-		while(!this.tasksQueue.isFinished()){
+		while(!this.scheduler.isFinished()){
 			try {
-				Task task = tasksQueue.take();
-				task.doTask();
-				System.out.println(this.getName() + " does the task");
-				this.tasksQueue.newMatch();
-				System.out.println("Remaining: " + this.tasksQueue.getRemaining());
-			} catch (InterruptedException e) {
-				System.out.println(this.getName() + " Thread closed");
+				System.out.println(this.getName() + " starts doing the task");
+				Task taskToPerform = this.scheduler.take();
+				boolean match = taskToPerform.doTask();
+				System.out.println(this.getName() + " has completed the task");
+				//Checks if the task produced a match, in this case the number of match will be incremented 
+				if(match)
+					this.scheduler.newMatch();
+				
+			}catch(TaskCompletedException e){
+				//Thread.currentThread().interrupt();	
 			} catch (Exception e) {
-				Thread.currentThread().interrupt();	
+				//Displays the exception message
+				if(e.getMessage().equalsIgnoreCase(""))
+					System.out.println(e);
+				else
+					System.out.println(e.getMessage());
 			}
 		}	
+		//Simulation completed, so all the threads must be closed.
+		Thread.currentThread().interrupt();	
+		System.out.println(super.getName() + " closed!");
 	}
 
 }

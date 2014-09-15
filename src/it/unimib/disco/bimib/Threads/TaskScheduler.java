@@ -8,37 +8,25 @@ package it.unimib.disco.bimib.Threads;
  * @year 2014
  */
 
-//System imports
-import java.util.ArrayList;
 
-public class TasksQueue {
+//GRNSim imports
+import it.unimib.disco.bimib.Exceptions.TaskCompletedException;
+
+public class TaskScheduler {
 	
-	private ArrayList<Task> tasksQueue;
+	private Task taskToPerform;
 	private int remaining;
 	
-	public TasksQueue(int required){
-		this.tasksQueue = new ArrayList<Task>();
+	public TaskScheduler(Task taskToPerform, int required){
+		this.taskToPerform = taskToPerform;
 		this.remaining = required > 0 ? required : 0;
 	}
 	
-	public synchronized void push(Task task) throws InterruptedException{
-		if(task != null && this.remaining > 0){
-			if(this.tasksQueue.size() >= this.remaining){
-				System.out.println("Mi metto in wait");
-				wait();
-			}
-			this.tasksQueue.add(task);
-			notifyAll();
-		}	
-	}
-	
-	public synchronized Task take() throws InterruptedException{
-		if(this.tasksQueue.isEmpty() || this.isFinished())
-			wait();
-		Task task = this.tasksQueue.get(0);
-		this.tasksQueue.remove(0);
-		notifyAll();
-		return task;
+	public synchronized Task take() throws TaskCompletedException{
+		if(this.remaining == 0)
+			throw new TaskCompletedException();
+		else
+			return this.taskToPerform;
 	}
 	
 	public synchronized void newMatch(){

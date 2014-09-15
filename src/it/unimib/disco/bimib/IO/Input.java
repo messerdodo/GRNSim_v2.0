@@ -1,5 +1,3 @@
-package it.unimib.disco.bimib.IO;
-
 /**
  * This class defines a set of static methods to use in order to 
  * reads inputs for the simulator.
@@ -7,16 +5,39 @@ package it.unimib.disco.bimib.IO;
  * @group BIMIB @ DISCo (Department of Information Technology, Systems and Communication) of Milan University - Bicocca 
  */
 
+
+package it.unimib.disco.bimib.IO;
+
 //GRNSim imports
 import it.unimib.disco.bimib.Exceptions.*;
+import it.unimib.disco.bimib.Networks.GraphManager;
+import it.unimib.disco.bimib.Functions.*;
+import it.unimib.disco.bimib.Utility.SimulationFeaturesConstants;
 
 //System imports
 import java.util.Properties;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import java.util.ArrayList;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class Input {
+	
+	private static final int SOURCE = 0;
+	private static final int DESTINATION = 1;
+
 	
 	/**
 	 * This method returns the arguments properties object from a 
@@ -118,10 +139,10 @@ public class Input {
 			//Checks if the read line is a couple key value
 			if(readLine.length < 2)
 				throw new MissedParamException("Missed value in the input file");	
-			/*
+			
 			//Checks if the inserted feature allows multiple values 
-			else if(readLine[0].equals(Constants.EXCLUDES_SOURCE_GENES) ||
-					readLine[0].equals(Constants.EXCLUDES_TARGET_GENES)){
+			else if(readLine[0].equals(SimulationFeaturesConstants.EXCLUDES_SOURCE_GENES) ||
+					readLine[0].equals(SimulationFeaturesConstants.EXCLUDES_TARGET_GENES)){
 				//Reads the multiple values
 				ArrayList<String> values = new ArrayList<String>();
 				for(int i = 1; i < readLine.length; i++)
@@ -129,7 +150,7 @@ public class Input {
 				//Adds the property
 				features.put(readLine[0], values);
 			}
-			*/
+
 			else{
 				//Adds the features in the properties.
 				features.setProperty(readLine[0], readLine[1]);
@@ -139,5 +160,130 @@ public class Input {
 		reader.close();
 		return features;
 	}
+	
+	/**
+	 * This method reads a GRNML file and returns the associated GraphManager.
+	 * @param fileName: The file name.
+	 * @return A GraphManager object with the read graph inside.
+	 * @throws ParamDefinitionException
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws NotExistingNodeException
+	 */
+	public static GraphManager readGRNMLFile(String fileName) throws ParamDefinitionException, ParserConfigurationException, SAXException, IOException, NotExistingNodeException{
+
+		GraphManager graphManager = null;
+		String[] nodesName;
+		Function[] functions;
+
+		//Param checking
+		if(fileName == null)
+			throw new NullPointerException("The file name must not be null");
+
+		File grnmlFile = new File(fileName);
+
+		if(grnmlFile.exists()){
+			graphManager = new GraphManager();
+
+
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(grnmlFile);
+
+			String graphTopology = doc.getDocumentElement().getAttribute("topology");
+
+			int nodesNumber = Integer.valueOf(doc.getDocumentElement().getAttribute("nodes_number"));
+			nodesName = new String[nodesNumber];
+			functions = new Function[nodesNumber];
+
+			NodeList nodesList = doc.getElementsByTagName("node");
+			NodeList edgesList = doc.getElementsByTagName("edge");
+
+			for (int i = 0; i < nodesList.getLength(); i++) {
+				nodesName[i] = nodesList.item(i).getAttributes().getNamedItem("name").getNodeValue();
+
+				//Gets the associated function
+				NodeList functionList = nodesList.item(i).getChildNodes();
+				//No function is specified.
+				if(functionList.getLength() == 0)
+					functions[i] = null;
+
+				for(int j = 0; j < functionList.getLength(); j++){
+					if(functionList.item(j).getNodeType() == Node.ELEMENT_NODE){
+						Element funct = (Element)functionList.item(j);
+
+						String functionType = funct.getAttribute("type");
+						double bias;
+						String[] inputsTable;
+						Boolean[] outputsTable;
+
+						NodeList inputsList = funct.getElementsByTagName("input_node");
+						ArrayList<Integer> inputNodes = new ArrayList<Integer>();
+
+						for(int k = 0; k < inputsList.getLength(); k++)
+							inputNodes.add(Integer.valueOf(inputsList.item(k).getTextContent()));
+
+						//Checks the function type
+						if(functionType.equals("random") || functionType.equals("canalizing")){
+
+							bias = Double.valueOf(funct.getElementsByTagName("bias").item(0).getTextContent());
+
+							//Reads the function table
+							NodeList entries = funct.getElementsByTagName("entry");
+							inputsTable = new String[entries.getLength()];
+							outputsTable = new Boolean[entries.getLength()];
+							
+							for(int h = 0; h < entries.getLength(); h++){
+								String input = ((Element)entries.item(h)).getAttribute("input");
+								Boolean output = ((Element)entries.item(h)).getAttribute("output").equals("0") ? Boolean.FALSE : Boolean.TRUE;
+								inputsTable[h] = input;
+								outputsTable[h] = output;
+							}
+
+							//Canalizing functions
+							if(functionType.equals("canalizing")){
+								NodeList canalizingList = funct.getElementsByTagName("canalizing_input");
+								int[] usefullInputs = new int[canalizingList.getLength()];
+
+								for(int k = 0; k < canalizingList.getLength(); k++){
+
+									usefullInputs[k] = Integer.valueOf((
+											canalizingList.item(k).getTextContent().replace("\n", "")
+											).replace("\t", ""));
+								}
+								functions[i] = new CanalizedFunction(bias, usefullInputs, inputsTable, outputsTable, inputNodes);
+								//Random functions
+							}else{
+								functions[i] = new RandomFunction(bias, inputsTable, outputsTable, inputNodes);
+							}
+							//AND functions
+						}else if(functionType.equals("AND")){
+							functions[i] = new AndOrFunction(true, inputNodes);
+							//OR functions
+						}else if(functionType.equals("OR")){
+							functions[i] = new AndOrFunction(false, inputNodes);
+						}else{
+							functions[i] = null;
+						}
+
+					}
+				}	
+			}
+
+			//Gets the edges
+			int[][] edges = new int[edgesList.getLength()][2];
+			for(int i = 0; i < edgesList.getLength(); i++){
+				int source = Integer.valueOf(edgesList.item(i).getAttributes().getNamedItem("source").getNodeValue());
+				int destination = Integer.valueOf(edgesList.item(i).getAttributes().getNamedItem("destination").getNodeValue());
+				edges[i][SOURCE] = source;
+				edges[i][DESTINATION] = destination;
+			}
+
+			graphManager.createGraph(nodesName, edges, functions, graphTopology);
+		}
+		return graphManager;	
+	}
+	
 	
 }
