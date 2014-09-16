@@ -33,7 +33,8 @@ public class Console {
 		int threads, requiredNetworks;
 		String taskToPerform, outputFolder, originalGRNMLPath;
 		ArrayList<Thread> activeThreads = new ArrayList<Thread>();
-		
+		Task task = null;
+		TaskScheduler scheduler = null; 
 		try{
 			//Converts the input arguments from a string array to a properties object.
 			inputArgs = Input.readInputArguments(args);
@@ -83,19 +84,40 @@ public class Console {
 				throw new MissingFeaturesException("The " + SimulationFeaturesConstants.MATCHING_NETWORKS + " key must be specified in the simulation features file.");
 			requiredNetworks = Integer.parseInt(simulationFeatures.getProperty(SimulationFeaturesConstants.MATCHING_NETWORKS));
 			
-			//Network creation
+			
+			
+			//Network creation (creation and simulation)
 			if(taskToPerform.equals(TaskFeaturesConstants.NETWORK_CREATION)){
-				networkCreation(activeThreads, simulationFeatures, threads, outputFolder, requiredNetworks);
+				//networkCreation(activeThreads, simulationFeatures, threads, outputFolder, requiredNetworks);
+				task = new NetworkCreation(simulationFeatures,new HashMap<String,String>(), outputFolder); 
+			//Network Modification (editing and simulation)
 			}else if(taskToPerform.equals(TaskFeaturesConstants.NETWORK_MODIFICATION)){
 				//Gets the original network grnml file name.
 				if(!taskFeatures.containsKey(TaskFeaturesConstants.ORIGINAL_NETWORK_FILE))
 					throw new MissingFeaturesException(TaskFeaturesConstants.ORIGINAL_NETWORK_FILE + " key must be specified in the task features file."); 
 				originalGRNMLPath = taskFeatures.getProperty(TaskFeaturesConstants.ORIGINAL_NETWORK_FILE);
-				networkModification(activeThreads, simulationFeatures, threads, outputFolder, originalGRNMLPath, requiredNetworks);
+				//networkModification(activeThreads, simulationFeatures, threads, outputFolder, originalGRNMLPath, requiredNetworks);
+				task = new NetworkModificationTask(simulationFeatures,new HashMap<String,String>(), outputFolder, originalGRNMLPath); 
+			//Open and simulation (opens a given network and simulates it)
+			}else if(taskToPerform.equals(TaskFeaturesConstants.OPEN_AND_SIMULATE)){
+				//Gets the original network grnml file name.
+				if(!taskFeatures.containsKey(TaskFeaturesConstants.ORIGINAL_NETWORK_FILE))
+					throw new MissingFeaturesException(TaskFeaturesConstants.ORIGINAL_NETWORK_FILE + " key must be specified in the task features file."); 
+				//Gets the given network
+				originalGRNMLPath = taskFeatures.getProperty(TaskFeaturesConstants.ORIGINAL_NETWORK_FILE);
+				task = new OpenAndSimulationTask(simulationFeatures,new HashMap<String,String>(), outputFolder, originalGRNMLPath); 
 			}else{
 				throw new InputFormatException("Incorrect " + TaskFeaturesConstants.NETWORK_CREATION + " value in the task file.");
 			}
 			
+			//Starts the execution threads
+			scheduler = new TaskScheduler(task, requiredNetworks);
+			//Launches 'threads' executor threads
+			for(int thread = 0; thread < threads; thread ++){
+				activeThreads.add(new TasksExecutor(scheduler, "Executor " + (thread + 1)));
+				activeThreads.get(thread).start();
+			}
+	
 		}catch(Exception ex){
 			
 			
@@ -118,7 +140,7 @@ public class Console {
 	 * @param threads: Number of threads to use
 	 * @param outputFolder: Folder where place the output files.
 	 */
-	private static void networkCreation(ArrayList<Thread> activeThreads , Properties simulationFeatures, int threads, String outputFolder, int requiredNetworks){
+/*	private static void networkCreation(ArrayList<Thread> activeThreads , Properties simulationFeatures, int threads, String outputFolder, int requiredNetworks){
 		NetworkCreation creationTask = new NetworkCreation(simulationFeatures,new HashMap<String,String>(), outputFolder); 
 		TaskScheduler scheduler = new TaskScheduler(creationTask, requiredNetworks);
 		//Launches 'threads' executor threads
@@ -141,7 +163,7 @@ public class Console {
 	 * @throws ParserConfigurationException 
 	 * @throws ParamDefinitionException 
 	 */
-	private static void networkModification(ArrayList<Thread> activeThreads, Properties simulationFeatures, int threads, String outputFolder, String originalGRNMLPath, int requiredNetworks) throws ParamDefinitionException, ParserConfigurationException, SAXException, IOException, NotExistingNodeException{
+/*	private static void networkModification(ArrayList<Thread> activeThreads, Properties simulationFeatures, int threads, String outputFolder, String originalGRNMLPath, int requiredNetworks) throws ParamDefinitionException, ParserConfigurationException, SAXException, IOException, NotExistingNodeException{
 
 		NetworkModificationTask editingTask = new NetworkModificationTask(simulationFeatures,new HashMap<String,String>(), outputFolder, originalGRNMLPath); 
 		TaskScheduler scheduler = new TaskScheduler(editingTask, requiredNetworks);
@@ -154,6 +176,6 @@ public class Console {
 		
 	}
 	
-	
+	*/
 	
 }

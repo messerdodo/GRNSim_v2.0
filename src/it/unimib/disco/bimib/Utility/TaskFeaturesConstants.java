@@ -27,6 +27,11 @@ public class TaskFeaturesConstants {
 	public static final String NETWORK_MODIFICATION = "network-modification";
 	
 	/**
+	 * This value specifies the simulation task with a given network.
+	 */
+	public static final String OPEN_AND_SIMULATE = "open-and-simulate";
+	
+	/**
 	 * This key specifies the number of threads to use
 	 */
 	public static final String THREADS = "threads";
