@@ -18,6 +18,8 @@ import it.unimib.disco.bimib.Mutations.MutationManager;
 //GRNSim imports
 import it.unimib.disco.bimib.Networks.GraphManager;
 import it.unimib.disco.bimib.Sampling.SamplingManager;
+import it.unimib.disco.bimib.Statistics.NetworkStructureStatistics;
+import it.unimib.disco.bimib.Utility.OutputConstants;
 import it.unimib.disco.bimib.IO.Output;
 
 public class NetworkCreation implements Task {
@@ -67,7 +69,7 @@ public class NetworkCreation implements Task {
 		String networkFileName = graphManager.hashCode() + "_network.grnml";
 		String atmFileName = graphManager.hashCode() + "_atm.csv";
 		String attractorsFileName = graphManager.hashCode() + "_attractors.csv";
-
+		String synthesisFileName = graphManager.hashCode() + "_synthesis.csv";
 		//Creates the folder
 		Output.createFolder(this.outputFolder + "/" + networkFolderName);
 
@@ -79,6 +81,24 @@ public class NetworkCreation implements Task {
 		Output.createATMFile(atmManager.getAtm(), this.outputFolder + "/" + networkFolderName + "/" + atmFileName);
 		//Stores the attractors
 		Output.saveAttractorsFile(samplingManager.getAttractorFinder(), this.outputFolder + "/" + networkFolderName + "/" + attractorsFileName);
+		
+		//Saves the statistics
+		Properties statistics = new Properties();
+		statistics.put(OutputConstants.SIMULATION_ID, graphManager.hashCode());
+		statistics.put(OutputConstants.CLUSTERING_COEFFICIENT, NetworkStructureStatistics.getClusteringCoefficient(graphManager));
+		statistics.put(OutputConstants.AVERAGE_BIAS, NetworkStructureStatistics.getAverageBiasValue(graphManager));
+		statistics.put(OutputConstants.AVERAGE_PATH_LENGTH, NetworkStructureStatistics.getAveragePath(graphManager));
+		statistics.put(OutputConstants.NETWORK_DIAMETER, NetworkStructureStatistics.getNetworkDiameter(graphManager));
+		statistics.put(OutputConstants.ATTRACTORS_NUMBER, samplingManager.getAttractorFinder().getAttractorsNumber());
+		//Gets the average attractor length 
+		double avgLength = 0.0;
+		for(Object attractor : samplingManager.getAttractorFinder().getAttractors())
+			avgLength = avgLength + samplingManager.getAttractorFinder().getAttractorLength(attractor);
+		statistics.put(OutputConstants.ATTRACTORS_LENGTH, avgLength/samplingManager.getAttractorFinder().getAttractorsNumber());
+		statistics.put(OutputConstants.TREE_DISTANCE, 0);
+		statistics.put(OutputConstants.NOT_FOUND_ATTRACTORS, 0);
+		
+		Output.createSynthesisFile(statistics, this.outputFolder + "/" + networkFolderName + "/" + synthesisFileName);
 		
 		return true;
 		

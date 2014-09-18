@@ -9,8 +9,10 @@
  */
 
 package it.unimib.disco.bimib.Atms;
-import java.util.ArrayList;
 
+//System imports
+import java.util.ArrayList;
+//GRNSim imports
 import it.unimib.disco.bimib.Exceptions.*;
 import it.unimib.disco.bimib.Mutations.Mutation;
 import it.unimib.disco.bimib.Sampling.AttractorsFinder;
@@ -49,7 +51,6 @@ public class Atm {
 
 		this.attractorsFinder = attractorsFinder;
 		this.mutation = mutation;
-
 	}
 
 
@@ -104,12 +105,9 @@ public class Atm {
 
 		//Copies the attractor's array into an ArrayList
 		ArrayList<Object> attractorVet = new ArrayList<Object>();
-
 		for(int index = 0; index < numberOfAttractors; index++){
 			attractorVet.add(attractors[index]);
 		}
-
-
 		//Initializes the atm.
 		this.atm = new double[numberOfAttractors][numberOfAttractors];
 
@@ -122,9 +120,9 @@ public class Atm {
 
 		//Calculates the ATM entries.
 		int index;
-
 		
 		for(int a = 0; a < numberOfAttractors; a++){
+		
 				//Gets a permutation of the states in the selected attractor
 				statesInAttractor = UtilityRandom.randomPermutation(
 						this.attractorsFinder.getStatesInAttractor(attractorVet.get(a)));
@@ -139,14 +137,13 @@ public class Atm {
 						//Gets the new state's attractor
 						attractorNewState = attractorsFinder.getAttractor(newState);
 						if(attractorNewState != null){
+					
 							//Verifies if the attractor has already been discovered.
-							if(attractorVet.contains(attractorNewState) == true){	
-							
+							if(attractorVet.contains(attractorNewState) == true){
+			
 								//Gets the new state's index from the attractor's ArrayList
 								//and modifies the Atm matrix
 								this.atm[a][attractorVet.indexOf(attractorNewState)] = this.atm[a][attractorVet.indexOf(attractorNewState)] + 1.0;
-							
-								
 							}else{
 								//Adds the new attractors and modifies the Atm matrix
 								reCreateAtm(attractorsFinder.getAttractors());
@@ -154,15 +151,16 @@ public class Atm {
 								this.atm[a][attractorVet.indexOf(attractorNewState)] = this.atm[a][attractorVet.indexOf(attractorNewState)] + 1.0;
 								numberOfAttractors = numberOfAttractors + 1;
 							}
+						}else{
+							System.out.println("No attractor found");
 						}
 					}
 					index ++;
-					//System.out.println("a = " + a +  " na = " + numberOfAttractors + " index = " + index + " limit " + Math.floor(perturbStatesRatio * statesInAttractor.length));
-				}while(index < Math.floor(perturbStatesRatio * statesInAttractor.length));
-				
-				
+					
+				}while(index < Math.floor(perturbStatesRatio * statesInAttractor.length));	
 		}
-		//Atm matriz normalization
+		
+		//Atm matrix normalization
 		this.normalize();
 		storeAtmNotMatching(this.atm);
 	}
@@ -195,7 +193,6 @@ public class Atm {
 			attractorVet.add(attractors[index]);
 		}
 
-
 		//Initializes the atm's size
 		this.atm = new double[numberOfAttractors][numberOfAttractors];
 
@@ -225,7 +222,6 @@ public class Atm {
 					if(attractorVet.contains(attractorNewState) == true){		
 						//Gets the new state's index from the attractor's ArrayList
 						//and modifies the Atm matrix
-
 						this.atm[a][attractorVet.indexOf(attractorNewState)] = this.atm[a][attractorVet.indexOf(attractorNewState)] + 1.0;
 
 					}else{
@@ -240,7 +236,6 @@ public class Atm {
 
 				if(index > Math.floor(mutationRatio * statesInAttractor.length))
 					break;
-
 				index ++;
 			a++;
 			}
@@ -308,7 +303,6 @@ public class Atm {
 				atmForTes[line][pillar] = this.atm[line][pillar];
 			}
 		}
-
 		return atmForTes;
 	}
 

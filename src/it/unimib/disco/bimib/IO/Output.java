@@ -11,10 +11,6 @@
 package it.unimib.disco.bimib.IO;
 
 //System imports
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.io.File;
@@ -22,15 +18,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-
-
-
-
 //GRNSim imports
 import it.unimib.disco.bimib.Atms.Atm;
 import it.unimib.disco.bimib.Exceptions.*;
 import it.unimib.disco.bimib.Networks.*;
-import it.unimib.disco.bimib.Mutations.MutationManager;
 import it.unimib.disco.bimib.Sampling.AttractorsFinder;
 import it.unimib.disco.bimib.Utility.OutputConstants;
 /*import Statistics.DynamicPerturbation;
@@ -43,8 +34,8 @@ import TES.TesTree;*/
 public class Output {
 
 	//Constants
-	private final static int NETWORK_STATISTICS_NUMBER = 5;
-	private final static int COUPLE = 2;
+	//private final static int NETWORK_STATISTICS_NUMBER = 5;
+	//private final static int COUPLE = 2;
 
 
 	public Output() {
@@ -246,82 +237,83 @@ public class Output {
 	 * @throws Exception: This exception is thrown if the property object does not contain all the required statistics.
 	 */
 	public static void createSynthesisFile(Properties results, String fileName) throws Exception{
+	
 		//Checks the param values
 		if(fileName == null)
 			throw new NullPointerException("The file name must not be null");
 		if(results == null)
 			throw new NullPointerException("The StoredResults object must not be null");
-		//Defines the writer streams
-		FileWriter writer = new FileWriter(fileName);
-		PrintWriter printer = new PrintWriter(writer);
 		
 		//Network ID
 		if(!results.containsKey(OutputConstants.SIMULATION_ID))
 			throw new Exception(OutputConstants.SIMULATION_ID + " key must be in the results object");
-		//Writes the simulation id
-		printer.print(results.getProperty(OutputConstants.SIMULATION_ID) + ",");
-		printer.flush();
-		
 		//Clustering coefficient
 		if(!results.containsKey(OutputConstants.CLUSTERING_COEFFICIENT))
 			throw new Exception(OutputConstants.CLUSTERING_COEFFICIENT + " key must be in the results object");
-		//Writes the simulation id
-		printer.print(results.getProperty(OutputConstants.CLUSTERING_COEFFICIENT) + ",");
-		printer.flush();
-		
 		//Average bias value
 		if(!results.containsKey(OutputConstants.AVERAGE_BIAS))
 			throw new Exception(OutputConstants.AVERAGE_BIAS + " key must be in the results object");
-		//Writes the simulation id
-		printer.print(results.getProperty(OutputConstants.AVERAGE_BIAS) + ",");
-		printer.flush();
-		
 		//Average path length
 		if(!results.containsKey(OutputConstants.AVERAGE_PATH_LENGTH))
 			throw new Exception(OutputConstants.AVERAGE_PATH_LENGTH + " key must be in the results object");
-		//Writes the average path length
-		printer.print(results.getProperty(OutputConstants.AVERAGE_PATH_LENGTH) + ",");
-		printer.flush();
-
 		//Network diameter
 		if(!results.containsKey(OutputConstants.NETWORK_DIAMETER))
 			throw new Exception(OutputConstants.NETWORK_DIAMETER + " key must be in the results object");
-		//Writes the network diameter
-		printer.print(results.getProperty(OutputConstants.NETWORK_DIAMETER) + ",");
-		printer.flush();
-
 		//Number of attractors in the network
 		if(!results.containsKey(OutputConstants.ATTRACTORS_NUMBER))
 			throw new Exception(OutputConstants.ATTRACTORS_NUMBER + " key must be in the results object");
-		//Writes the number of attractors
-		printer.print(results.getProperty(OutputConstants.ATTRACTORS_NUMBER) + ",");
-		printer.flush();
-				
 		//Average attractors lenght
 		if(!results.containsKey(OutputConstants.ATTRACTORS_LENGTH))
 			throw new Exception(OutputConstants.ATTRACTORS_LENGTH + " key must be in the results object");
-		//Writes the attractors average length
-		printer.print(results.getProperty(OutputConstants.ATTRACTORS_LENGTH) + ",");
-		printer.flush();	
-		
 		//Distance from the given tree
 		if(!results.containsKey(OutputConstants.TREE_DISTANCE))
 			throw new Exception(OutputConstants.TREE_DISTANCE + " key must be in the results object");
-		//Writes the distance from the given tree
-		printer.print(results.getProperty(OutputConstants.TREE_DISTANCE) + ",");
-		printer.flush();	
-		
 		//Not found attractors
 		if(!results.containsKey(OutputConstants.NOT_FOUND_ATTRACTORS))
 			throw new Exception(OutputConstants.NOT_FOUND_ATTRACTORS + " key must be in the results object");
+
+		//Defines the writer streams
+		FileWriter writer = new FileWriter(fileName);
+		PrintWriter printer = new PrintWriter(writer);	
+		
+		//Writes the simulation id
+		printer.print(results.get(OutputConstants.SIMULATION_ID) + ",");
+		printer.flush();
+		
+		//Writes the simulation id
+		printer.print(results.get(OutputConstants.CLUSTERING_COEFFICIENT) + ",");
+		printer.flush();
+		
+		//Writes the simulation id
+		printer.print(results.get(OutputConstants.AVERAGE_BIAS) + ",");
+		printer.flush();
+		
+		//Writes the average path length
+		printer.print(results.get(OutputConstants.AVERAGE_PATH_LENGTH) + ",");
+		printer.flush();
+
+		//Writes the network diameter
+		printer.print(results.get(OutputConstants.NETWORK_DIAMETER) + ",");
+		printer.flush();
+
+		//Writes the number of attractors
+		printer.print(results.get(OutputConstants.ATTRACTORS_NUMBER) + ",");
+		printer.flush();
+				
+		//Writes the attractors average length
+		printer.print(results.get(OutputConstants.ATTRACTORS_LENGTH) + ",");
+		printer.flush();	
+		
+		//Writes the distance from the given tree
+		printer.print(results.get(OutputConstants.TREE_DISTANCE) + ",");
+		printer.flush();	
+		
 		//Writes the number of not found attractors
-		printer.print(results.getProperty(OutputConstants.NOT_FOUND_ATTRACTORS) + ",");
+		printer.print(results.get(OutputConstants.NOT_FOUND_ATTRACTORS));
 		printer.flush();	
 		
 		printer.close();
 		writer.close();
-		
-		
 	}
 	
 	

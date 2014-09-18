@@ -77,7 +77,6 @@ public class PartialSampling extends BinarySamplingMethod {
 		int nodes = this.graph.getNodesNumber();
 
 		for(int i = 0; i < initialConditions; i++){
-
 			//Generates a new random state
 			state = UtilityRandom.createRandomBinarySequence(nodes, ACTIVATION_PROBABILITY);
 			//Calculates the attractor for the generated state
@@ -87,7 +86,6 @@ public class PartialSampling extends BinarySamplingMethod {
 				//No attractor found
 				super.attractorNotFound = super.attractorNotFound + 1;
 			}
-
 		}
 	}
 
@@ -106,14 +104,11 @@ public class PartialSampling extends BinarySamplingMethod {
 		String currentAttractor;
 		ArrayList<String> visited;
 		String newState;
-		int count;
-
+		int count = 1;
 		currentAttractor = null;
 		newState = null;
 		visited = new ArrayList<String>();
-		count = 1;
 		do{
-
 			//Stores the position for the transient
 			this.positions.put(currentState, count);
 			count ++;
@@ -136,7 +131,6 @@ public class PartialSampling extends BinarySamplingMethod {
 							this.positions.get(newState) - 
 							this.positions.get(state));
 				}
-
 			}
 			if(currentAttractor != null){
 				for(String s : visited){
@@ -148,11 +142,10 @@ public class PartialSampling extends BinarySamplingMethod {
 		}while(currentAttractor == null && (count <= cutoff || cutoff == -1 ));
 		
 		//Attractor not found
-		if(count > cutoff){
+		if((cutoff != -1) && (count > cutoff)){
 			throw new AttractorNotFoundException();
 		}
 	}
-
 
 	/**
 	 * This method returns the attractor of a given network status.
@@ -170,9 +163,9 @@ public class PartialSampling extends BinarySamplingMethod {
 		//Checks if the status is a string
 		if(!(status instanceof String))
 			throw new ParamDefinitionException("The staus must be a string value");
+		
 		//The attractor of the passed state is unknown
-		if(!this.attractors.containsKey(status))
-			
+		if(!this.attractors.containsKey(status)){
 			try{
 				//Calculates the attractor for the given state
 				this.searchAttractorWithInitialState((String)status, this.cutoff);
@@ -181,8 +174,8 @@ public class PartialSampling extends BinarySamplingMethod {
 			}catch(AttractorNotFoundException e){
 				return null;
 			}
-		return null;
-		
+		}
+		return this.attractors.get(status);	
 	}
 
 	/**
@@ -237,7 +230,6 @@ public class PartialSampling extends BinarySamplingMethod {
 
 	}
 
-
 	/**
 	 * This method rewires the attractor finder element.
 	 * It is used when the perpetual mutations are introduced
@@ -259,7 +251,6 @@ public class PartialSampling extends BinarySamplingMethod {
 		}
 
 	}
-
 
 	/**
 	 * This method saves the old state of the sampling object.
@@ -292,8 +283,6 @@ public class PartialSampling extends BinarySamplingMethod {
 	public HashMap<Object, Object[]> getStoredAttractors(){
 		return this.storedInformation;
 	}
-
-
 
 	/**
 	 * This method returns all the old attractor when is made a permanent perturbation

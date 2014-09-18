@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-
 //GRNSim imports
 import it.unimib.disco.bimib.Atms.Atm;
 import it.unimib.disco.bimib.Networks.GraphManager;
@@ -515,9 +514,10 @@ public class BinaryMutation implements Mutation {
 		for(int gene : flippedNodes){
 			state[gene] = (state[gene] == Boolean.TRUE ? Boolean.FALSE : Boolean.TRUE);
 		}
-
+		
+		Boolean[] newState = this.graphManager.getNewState(state);
 		//Applies the states function
-		return doFlips(flippedNodes, this.graphManager.getNewState(state), times, currentTime + 1);
+		return doFlips(flippedNodes, newState, times, currentTime + 1);
 		
 	}
 	

@@ -101,7 +101,6 @@ public class AtmManager {
 
 		//Flip mutations
 		if(simulationFeatures.get(SimulationFeaturesConstants.MUTATION_TYPE).equals(SimulationFeaturesConstants.FLIP_MUTATIONS)){
-
 			//Calculate the atm with flips
 			this.atm.createAtmWithFlip(samplingManager.getAttractorFinder().getAttractors(),
 					mutatedNodesNumber, perturbExperiments, mutationRate, times);

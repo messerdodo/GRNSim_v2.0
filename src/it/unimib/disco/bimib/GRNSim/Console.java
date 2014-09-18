@@ -19,11 +19,6 @@ import it.unimib.disco.bimib.Utility.TaskFeaturesConstants;
 import java.util.Properties;
 import java.util.HashMap;
 import java.util.ArrayList;
-import java.io.IOException;
-
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
 
 public class Console {
 
@@ -107,7 +102,7 @@ public class Console {
 				originalGRNMLPath = taskFeatures.getProperty(TaskFeaturesConstants.ORIGINAL_NETWORK_FILE);
 				task = new OpenAndSimulationTask(simulationFeatures,new HashMap<String,String>(), outputFolder, originalGRNMLPath); 
 			}else{
-				throw new InputFormatException("Incorrect " + TaskFeaturesConstants.NETWORK_CREATION + " value in the task file.");
+				throw new InputFormatException("Incorrect " + TaskFeaturesConstants.TASK_TO_PERFORM + " value in the task file.");
 			}
 			
 			//Starts the execution threads
