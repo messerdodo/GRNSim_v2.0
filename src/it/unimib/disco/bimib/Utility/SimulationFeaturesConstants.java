@@ -235,7 +235,13 @@ public class SimulationFeaturesConstants {
 	 * file. See 'MutationType' enumeration file for more information. 
 	 */
 	public static final String MUTATION_TYPE = "mutation-type";
-
+    
+    /**
+	 * Mutated nodes key.
+	 * It is used in order to define the number of nodes which must be mutated.
+	 */
+	public static final String HOW_MANY_NODES_TO_PERTURB = "how-many-nodes-to-perturb";
+    
 	/**
 	 * Custom mutation type value.
 	 */
@@ -251,12 +257,12 @@ public class SimulationFeaturesConstants {
 	 * It used in order to define the perpetual mutations rate.
 	 */
 	public static final String PERPETUAL_TYPE = "perpetual-type";
-
-	/**
-	 * Mutated nodes key. 
-	 * It is used in order to define the number of nodes which must be mutated.
+    
+    /**
+	 * Mutation rate key. It is used in order to define the ratio of the states
+	 * in the attractor to be mutated.
 	 */
-	public static final String HOW_MANY_NODES_TO_PERTURB = "how-many-nodes-to-perturb";
+	public static final String RATIO_OF_STATES_TO_PERTURB = "ratio-of-states-to-perturb";
 
 	/**
 	 * Knock in rate key. It is used in order to define the rate of 
@@ -280,11 +286,6 @@ public class SimulationFeaturesConstants {
 	 */
 	public static final String KNOCK_OUT = "knockOut";
 
-	/**
-	 * Mutation rate key. It is used in order to define the ratio of the states 
-	 * in the attractor to be mutated.
-	 */
-	public static final String RATIO_OF_STATES_TO_PERTURB = "ratio-of-states-to-perturb";
 	
 	/**
 	 * Mutation strength key. It is used in order to define the power of the mutation.

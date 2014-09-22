@@ -15,6 +15,7 @@ package it.unimib.disco.bimib.Statistics;
 //System imports
 import java.util.ArrayList;
 
+
 //GRNSim imports
 import it.unimib.disco.bimib.Exceptions.NotExistingNodeException;
 import it.unimib.disco.bimib.Networks.GraphManager;
@@ -39,10 +40,7 @@ public class NetworkStructureStatistics {
 		//Searches the biggest value in the graphMatrix
 		for(int line = 0; line < shortestPathMatrix.length; line++){
 			for(int column = 0; column < shortestPathMatrix.length; column++){
-				if(diameter < shortestPathMatrix[line][column]){
-					diameter = shortestPathMatrix[line][column];
-				}
-
+				diameter = Math.max(diameter, shortestPathMatrix[line][column]);
 			}
 		}
 		return diameter;
@@ -58,26 +56,20 @@ public class NetworkStructureStatistics {
 
 		int[][] graphMatrix = new int[graph.getNodesNumber()][graph.getNodesNumber()];
 		int[][] path = new int[graph.getNodesNumber()][graph.getNodesNumber()];
-
 		
-		for(int line = 0; line < graphMatrix.length; line++){
-			for(int column = 0; column < graphMatrix.length; column++){
-				if(line == column){
-					graphMatrix[line][column] = 0;
+		for(int i = 0; i < graphMatrix.length; i++)
+			for(int j = 0; j < graphMatrix.length; j++)
+				if(i == j){
+					graphMatrix[i][j] = 0;
+				}else if(graph.getGraph().areNodesConnected(i, j)){
+					//if the node are connected puts 1 in the matrix 
+					//and the following node in the path matrix
+					graphMatrix[i][j] = 1;
+				}else{
+					//if the node aren't connected puts 0 in the matrix and -1 in the path
+					graphMatrix[i][j] = Integer.MAX_VALUE;
 				}
-				else{
-					if(graph.getGraph().areNodesConnected(line, column)){
-						//if the node are connected puts 1 in the matrix 
-						//and the following node in the path matrix
-						graphMatrix[line][column] = 1;
-					}
-					else{
-						//if the node aren't connected puts 0 in the matrix and -1 in the path
-						graphMatrix[line][column] = Integer.MAX_VALUE;
-					}
-				}
-			}
-		}
+		//Preprocessing of the predecessor matrix
 		for (int i = 0; i < graphMatrix.length; i++){
 			for (int j = 0; j < graphMatrix.length; j++){
 				if (graphMatrix[i][j] != 0 && graphMatrix[i][j] != Integer.MAX_VALUE)
@@ -86,7 +78,7 @@ public class NetworkStructureStatistics {
 					path[i][j] = -1;
 			}
 		}
-		
+
 		//Searches the shortest path with Floyd-Warshall algorithm
 		for (int k = 0; k < path.length; k++){
 			for (int i = 0; i < path.length; i++){

@@ -52,8 +52,11 @@ public class MutationManager {
 		//Checks the features keys
 		if(!simulationFeatures.containsKey(SimulationFeaturesConstants.MIN_DURATION_OF_PERTURB))
 			throw new FeaturesException("Minimum mutation times feature missed");
+		
 		if(!simulationFeatures.containsKey(SimulationFeaturesConstants.MAX_DURATION_OF_PERTURB))
 			throw new FeaturesException("Maximim mutation times feature missed");
+		
+		//Mettere qua il controllo mutation type
 
 		//Set the class parameters
 		this.minTimes = Integer.parseInt(simulationFeatures.get(SimulationFeaturesConstants.MIN_DURATION_OF_PERTURB).toString());

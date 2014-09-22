@@ -35,6 +35,33 @@ public class BinaryMutation implements Mutation {
 	private int[] sensitivity;
 	private ArrayList<Integer> avalanches;
 
+	
+	/**
+	 * This is the constructor for the mutation during the simulation
+	 * @param graphManager
+	 * @param attractorFinder
+	 */
+	public BinaryMutation(GraphManager graphManager, AttractorsFinder attractorFinder) {
+
+		if(attractorFinder == null)
+			throw new NullPointerException("Sampling method object must be not null");
+		if(graphManager == null)
+			throw new NullPointerException("Graph manager must be not null");
+
+		this.sampling = attractorFinder;
+		this.graphManager = graphManager;
+		this.mutatedAtm = null;
+		
+		sensitivity = new int[graphManager.getNodesNumber()];
+		for(int i = 0; i < sensitivity.length; i++)
+			sensitivity[i] = 0;
+		this.avalanches = new ArrayList<Integer>();
+		
+	}
+	
+	
+	
+	
 	/**
 	 * This is the constructor and it is used the atm without normalization for the mutation post simulation
 	 * @param graphManager
@@ -54,29 +81,6 @@ public class BinaryMutation implements Mutation {
 		this.graphManager = graphManager;
 		this.mutatedAtm = null;
 
-		sensitivity = new int[graphManager.getNodesNumber()];
-		for(int i = 0; i < sensitivity.length; i++)
-			sensitivity[i] = 0;
-		this.avalanches = new ArrayList<Integer>();
-		
-	}
-	
-	/**
-	 * This is the constructor for the mutation during the simulation
-	 * @param graphManager
-	 * @param attractorFinder
-	 */
-	public BinaryMutation(GraphManager graphManager, AttractorsFinder attractorFinder) {
-
-		if(attractorFinder == null)
-			throw new NullPointerException("Sampling method object must be not null");
-		if(graphManager == null)
-			throw new NullPointerException("Graph manager must be not null");
-
-		this.sampling = attractorFinder;
-		this.graphManager = graphManager;
-		this.mutatedAtm = null;
-		
 		sensitivity = new int[graphManager.getNodesNumber()];
 		for(int i = 0; i < sensitivity.length; i++)
 			sensitivity[i] = 0;
