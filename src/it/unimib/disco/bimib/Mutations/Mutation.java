@@ -10,16 +10,9 @@
 
 package it.unimib.disco.bimib.Mutations;
 
-//System imports
-import java.util.ArrayList;
-import java.util.HashMap;
-
 //GRNSim imports
 import it.unimib.disco.bimib.Atms.Atm;
 import it.unimib.disco.bimib.Exceptions.*;
-import it.unimib.disco.bimib.Networks.GraphManager;
-import it.unimib.disco.bimib.Sampling.AttractorsFinder;
-
 
 public interface Mutation {
 	
@@ -28,6 +21,9 @@ public interface Mutation {
 	 * @return atm
 	 */
 	public Atm getMutatedAtm();
+	
+	
+	public Object doMutation(Object state) throws ParamDefinitionException, NotExistingNodeException, InputTypeException;
 
 	/**
 	 * This method allows to mutated a generic group of node in a specific times during the simulation
@@ -40,7 +36,7 @@ public interface Mutation {
 	 * @throws NotExistingAttractorsException
 	 * @throws ArrayIndexOutOfBoundsException
 	 */
-	public void mutationGenerator(int mutatedNodesNumber, int times, double mutationRate) throws Exception;
+	//public void mutationGenerator(int mutatedNodesNumber, int times, double mutationRate) throws Exception;
 	
 	/**
 	 * This method allows to mutate temporally a set of nodes after the simulation
@@ -56,11 +52,11 @@ public interface Mutation {
 	 * @throws NotExistingAttractorsException
 	 * @throws AttractorNotFoundException 
 	 */
-	public void mutationGenerator(GraphManager graphManager, double mutationRate, 
+	/*public void mutationGenerator(GraphManager graphManager, double mutationRate, 
 			ArrayList<Integer> mutatedNodesSet, double perpetualType, int times, 
 			double knockInRate) throws ParamDefinitionException, 
 			NotExistingNodeException, InputTypeException, NotExistingAttractorsException, AttractorNotFoundException;
-	
+	*/
 	/**
 	 * This method allows to mutate permanently a set of nodes after the simulation
 	 * @param graphManager
@@ -74,11 +70,11 @@ public interface Mutation {
 	 * @throws NotExistingAttractorsException
 	 * @throws AttractorNotFoundException 
 	 */
-	public void mutationGenerator(GraphManager graphManager, double mutationRate, HashMap<Integer, Boolean> perpetualMutatedNodes, 
+	/*public void mutationGenerator(GraphManager graphManager, double mutationRate, HashMap<Integer, Boolean> perpetualMutatedNodes, 
 			HashMap<Integer, Boolean> notPerpetualMutatedNodes, HashMap<Integer, Integer> notPerpetualMutationsTimes) 
 					throws ParamDefinitionException, NotExistingNodeException, InputTypeException, 
 					NotExistingAttractorsException, AttractorNotFoundException;
-
+*/
 	/**
 	 * This method allows to mutate a specific state
 	 * @param times: mutation's duration		
@@ -88,10 +84,10 @@ public interface Mutation {
 	 * @throws NotExistingNodeException
 	 * @throws InputTypeException
 	 */
-	public Object doMutation(ArrayList<Integer> mutatedNodes, int times, Object state) 
+	/*public Object doMutation(ArrayList<Integer> mutatedNodes, int times, Object state) 
 			throws ParamDefinitionException, ArrayIndexOutOfBoundsException, 
 			NotExistingNodeException, InputTypeException;
-
+*/
 	/**
 	 * This method returns the state mutated.
 	 * The mutations are only flips and the nodes are randomly selected.
@@ -100,7 +96,7 @@ public interface Mutation {
 	 * @throws InputTypeException 
 	 * @throws NotExistingNodeException 
 	 */
-	public Object doFlips(int nodesForFlip, Object state, int times) throws ParamDefinitionException, NotExistingNodeException, InputTypeException;
+	//public Object doFlips(int nodesForFlip, Object state, int times) throws ParamDefinitionException, NotExistingNodeException, InputTypeException;
 	
 	/**
 	 * This method allows to make a random perpetually mutation
@@ -109,7 +105,7 @@ public interface Mutation {
 	 * @throws ParamDefinitionException
 	 * @throws NotExistingNodeException
 	 */
-	public void randomPerpetuallyMutation(int nodes, double knockInRate) throws ParamDefinitionException, NotExistingNodeException;
+	//public void randomPerpetuallyMutation(int nodes, double knockInRate) throws ParamDefinitionException, NotExistingNodeException;
 	
 	/**
 	 * This method allows to make a perpetually mutation in a specific node
@@ -118,24 +114,24 @@ public interface Mutation {
 	 * @throws ParamDefinitionException
 	 * @throws NotExistingNodeException
 	 */
-	public void perpetuallyMutation(int node, boolean knockIn) throws ParamDefinitionException, NotExistingNodeException;
+	//public void perpetuallyMutation(int node, boolean knockIn) throws ParamDefinitionException, NotExistingNodeException;
 	
 	/**
 	 * This method returns all attractors mutated
 	 * @return sampling
 	 */
-	public AttractorsFinder getMutatedAttractorFinder();
+	//public AttractorsFinder getMutatedAttractorFinder();
 	
 	/**
 	 * This method returns the avalanche of a simulation
 	 * @return avalanche
 	 */
-	public ArrayList<Integer> getAvalanches();
+	//public ArrayList<Integer> getAvalanches();
 	
 	/**
 	 * This method returns the sensitivity of the network considered
 	 * @return sensitivity
 	 */
-	public int[] getSensitivity();
+	//public int[] getSensitivity();
 
 }

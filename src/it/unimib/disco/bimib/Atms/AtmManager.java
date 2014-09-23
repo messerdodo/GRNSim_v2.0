@@ -43,8 +43,6 @@ public class AtmManager {
 			ParamDefinitionException, NotExistingAttractorsException, NotExistingNodeException, InputTypeException, FeaturesException, AttractorNotFoundException {
 
 		double mutationRate;
-		int mutatedNodesNumber;
-		int times;
 		int perturbExperiments;
 
 		if(simulationFeatures == null)
@@ -53,8 +51,6 @@ public class AtmManager {
 			throw new MissingFeaturesException("The sampling manager must be not null");
 		if(!simulationFeatures.containsKey(SimulationFeaturesConstants.RATIO_OF_STATES_TO_PERTURB)) 
 			throw new MissingFeaturesException("Features must contain the mutation rate value");
-		if(!simulationFeatures.containsKey(SimulationFeaturesConstants.MUTATION_TYPE)) 
-			throw new MissingFeaturesException("Features must contain the mutation type value");
 		if(nodes < 0)
 			throw new ParamDefinitionException("The nodes number must be greater then 0");
 
@@ -72,46 +68,13 @@ public class AtmManager {
 		//Create a new ATM object
 		this.atm = new Atm(samplingManager.getAttractorFinder(), mutationManager.getMutation());
 
-		//Checks the mutation type parameter existence.
-		if(!simulationFeatures.containsKey(SimulationFeaturesConstants.MUTATION_TYPE))
-			throw new FeaturesException(SimulationFeaturesConstants.MUTATION_TYPE + " key must be specified");
-
-		//Checks the mutated nodes parameter existence.
-		if(!simulationFeatures.containsKey(SimulationFeaturesConstants.HOW_MANY_NODES_TO_PERTURB))
-			throw new FeaturesException(SimulationFeaturesConstants.HOW_MANY_NODES_TO_PERTURB + " key must be specified");
-		mutatedNodesNumber = Integer.parseInt(simulationFeatures.get(SimulationFeaturesConstants.HOW_MANY_NODES_TO_PERTURB).toString());
-		
-		//Checks the number of mutated nodes
-		if(mutatedNodesNumber > nodes)
-			throw new FeaturesException("Mutated nodes must be less than the network nodes");
-
 		//Gets the perturb experiments
 		if(!simulationFeatures.containsKey(SimulationFeaturesConstants.HOW_MANY_PERTURB_EXP)) 
 			throw new MissingFeaturesException("Features must contain the " + SimulationFeaturesConstants.HOW_MANY_PERTURB_EXP + " key");
 		perturbExperiments = Integer.parseInt(simulationFeatures.get(SimulationFeaturesConstants.HOW_MANY_PERTURB_EXP).toString());
 		
-		//Checks the mutation times existence and defines its value.
-		if(simulationFeatures.containsKey(SimulationFeaturesConstants.MIN_DURATION_OF_PERTURB) && 
-				simulationFeatures.containsKey(SimulationFeaturesConstants.MAX_DURATION_OF_PERTURB))
-			times = UtilityRandom.randomUniform(
-					Integer.parseInt(simulationFeatures.get(SimulationFeaturesConstants.MIN_DURATION_OF_PERTURB).toString()),
-					Integer.parseInt(simulationFeatures.get(SimulationFeaturesConstants.MAX_DURATION_OF_PERTURB).toString()));
-		else
-			throw new FeaturesException("The mutations times must be specified in a temporary mutation.");
-
-		//Flip mutations
-		if(simulationFeatures.get(SimulationFeaturesConstants.MUTATION_TYPE).equals(SimulationFeaturesConstants.FLIP_MUTATIONS)){
-			//Calculate the atm with flips
-			this.atm.createAtmWithFlip(samplingManager.getAttractorFinder().getAttractors(),
-					mutatedNodesNumber, perturbExperiments, mutationRate, times);
-			//Random temporary mutations mutations
-		}else if(simulationFeatures.get(SimulationFeaturesConstants.MUTATION_TYPE).equals(SimulationFeaturesConstants.TEMPORARY_MUTATIONS)){
-			
-			//Calculates the atm with mutations in nth times
-			this.atm.createAtmWithMutation(samplingManager.getAttractorFinder().getAttractors(), 
-					mutationRate, nodes, mutatedNodesNumber, times, perturbExperiments);  
-		}else 
-			throw new MissingFeaturesException("Unknown mutation type");
+		this.atm.createAtm(samplingManager.getAttractorFinder().getAttractors(), perturbExperiments, mutationRate);
+		
 	}
 
 	/**

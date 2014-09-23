@@ -1,11 +1,11 @@
 package it.unimib.disco.bimib.Statistics;
 
 //System imports
-import java.util.ArrayList;
-import java.util.HashMap;
+//import java.util.ArrayList;
+//import java.util.HashMap;
 
 //GRNSim imports
-import it.unimib.disco.bimib.Mutations.*;
+//import it.unimib.disco.bimib.Mutations.*;
 
 public class DynamicPerturbation {
 	
@@ -14,7 +14,7 @@ public class DynamicPerturbation {
 	 * @param mutationManager
 	 * @return avalanche distribution
 	 */
-	public static HashMap<Integer, Integer>  getAvalanche(MutationManager mutationManager){
+	/*public static HashMap<Integer, Integer>  getAvalanche(MutationManager mutationManager){
 		Mutation mutation = mutationManager.getMutation();
 		
 		ArrayList<Integer> result = mutation.getAvalanches();
@@ -29,17 +29,17 @@ public class DynamicPerturbation {
 			}
 		}
 		return distribution;
-	}
+	}*/
 	
 	/**
 	 * This method returns the sensitivity of a specific mutation experiments
 	 * @param mutationManager
 	 * @return sensitivity distribution
 	 */
-	public static int[]  getSensitivity(MutationManager mutationManager){
+	/*public static int[]  getSensitivity(MutationManager mutationManager){
 		Mutation mutation = mutationManager.getMutation();
 		return mutation.getSensitivity();
-	}
+	}*/
 	
 	
 

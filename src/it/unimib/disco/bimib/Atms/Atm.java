@@ -75,23 +75,9 @@ public class Atm {
 		this.normalize();
 
 	}
-
-	/**
-	 * This method creates the Atm matrix with flip
-	 * @param attractors : an array with all the attractors of the network
-	 * @param nodesForFlip: number of nodes to flip at the same time
-	 * @param perturbExperiments: number of perturb experiments
-	 * @param perturbStatesRatio: ratio of states to perturb
-	 * @return 
-	 * @throws ParamDefinitionException 
-	 * @throws NotExistingAttractorsException 
-	 * @throws InputTypeException 
-	 * @throws NotExistingNodeException 
-	 * @throws AttractorNotFoundException 
-	 * @throws Exception 
-	 */
-
-	public void createAtmWithFlip(Object[] attractors, int nodesForFlip, int perturbExperiments, double perturbStatesRatio, int times) 
+	
+	
+	public void createAtm(Object[] attractors, int perturbExperiments, double perturbStatesRatio) 
 			throws MissingFeaturesException, ParamDefinitionException, NotExistingAttractorsException, 
 			NotExistingNodeException, InputTypeException, AttractorNotFoundException {
 
@@ -133,7 +119,7 @@ public class Atm {
 					//Perform the perturb experiment
 					for(int exp = 0; exp < perturbExperiments; exp++){
 						//Calls the mutation method 
-						newState = this.mutation.doFlips(nodesForFlip, state, times);
+						newState = this.mutation.doMutation(state);
 						//Gets the new state's attractor
 						attractorNewState = attractorsFinder.getAttractor(newState);
 						if(attractorNewState != null){
@@ -164,87 +150,10 @@ public class Atm {
 		this.normalize();
 		storeAtmNotMatching(this.atm);
 	}
+	
+	
 
-	/**
-	 * This method creates the Atm matrix with mutation
-	 * @param attractors : an array with all the attractors of the network
-	 * @return 
-	 * @throws ParamDefinitionException 
-	 * @throws NotExistingAttractorsException 
-	 * @throws InputTypeException 
-	 * @throws NotExistingNodeException 
-	 * @throws AttractorNotFoundException 
-	 * @throws Exception 
-	 */
-	public void createAtmWithMutation(Object[] attractors, double mutationRatio, 
-			int nodes, int mutatedNodesNumber, int times, int perturbExperiments) 
-					throws MissingFeaturesException, ParamDefinitionException, 
-					NotExistingAttractorsException, NotExistingNodeException, 
-					InputTypeException, AttractorNotFoundException {
-
-		int numberOfAttractors = attractors.length;
-		Object newState, attractorNewState;
-		Object[] statesInAttractor;
-
-		//Copies the attractor's array into an ArrayList
-		ArrayList<Object> attractorVet = new ArrayList<Object>();
-
-		for(int index = 0; index < numberOfAttractors; index++){
-			attractorVet.add(attractors[index]);
-		}
-
-		//Initializes the atm's size
-		this.atm = new double[numberOfAttractors][numberOfAttractors];
-
-		//Initializes the atm at zero
-		for(int line = 0; line < numberOfAttractors; line++){
-			for(int pillar = 0; pillar < numberOfAttractors; pillar++){
-				this.atm[line][pillar] = 0;
-			}
-		}
-
-		int index;
-		int a = 0;
-		//for(int a = 0; a < numberOfAttractors; a++){
-		while(a < numberOfAttractors){
-			statesInAttractor = this.attractorsFinder.getStatesInAttractor(attractorVet.get(a));
-			index = 1;
-			for(Object state : statesInAttractor){
-
-				//Perturb experiments
-				for(int exp = 0; exp < perturbExperiments; exp++){
-					//Calls the mutation method 
-					newState = this.mutation.doMutation(UtilityRandom.randomSubset(nodes, mutatedNodesNumber), times, state);	
-					//Gets the new state's attractor
-					attractorNewState = attractorsFinder.getAttractor(newState);
-
-					//Verifies if the states has an attractor
-					if(attractorVet.contains(attractorNewState) == true){		
-						//Gets the new state's index from the attractor's ArrayList
-						//and modifies the Atm matrix
-						this.atm[a][attractorVet.indexOf(attractorNewState)] = this.atm[a][attractorVet.indexOf(attractorNewState)] + 1.0;
-
-					}else{
-
-						//Adds the new attractors and modifies the Atm matrix
-						reCreateAtm(attractorsFinder.getAttractors());
-						attractorVet.add(attractorNewState);
-						this.atm[a][attractorVet.indexOf(attractorNewState)] = this.atm[a][attractorVet.indexOf(attractorNewState)] + 1.0;
-						numberOfAttractors = numberOfAttractors + 1;
-					}
-				}
-
-				if(index > Math.floor(mutationRatio * statesInAttractor.length))
-					break;
-				index ++;
-			a++;
-			}
-		}
-
-		//Normalizes the atm matrix 
-		this.normalize();
-	}
-
+	
 	/**
 	 * This method recreates the Atm matrix when for a state there isn't its attarctors
 	 * @param newAttractors : an array with all the attractors of the network

@@ -242,57 +242,11 @@ public class SimulationFeaturesConstants {
 	 */
 	public static final String HOW_MANY_NODES_TO_PERTURB = "how-many-nodes-to-perturb";
     
-	/**
-	 * Custom mutation type value.
-	 */
-	public static final String CUSTOM_MUTATION = "custom";
-
-	/**
-	 * Random mutation type value.
-	 */
-	public static final String RANDOM_MUTATION = "random";
-
-	/**
-	 * Perpetual type key. 
-	 * It used in order to define the perpetual mutations rate.
-	 */
-	public static final String PERPETUAL_TYPE = "perpetual-type";
-    
     /**
 	 * Mutation rate key. It is used in order to define the ratio of the states
 	 * in the attractor to be mutated.
 	 */
 	public static final String RATIO_OF_STATES_TO_PERTURB = "ratio-of-states-to-perturb";
-
-	/**
-	 * Knock in rate key. It is used in order to define the rate of 
-	 * the gene knock in functions for the perpetual mutations.
-	 */
-	public static final String KNOCKIN_RATE = "knockIn-rate";
-
-	/**
-	 * Knock in value. It is used for defining a knock in mutation.
-	 */
-	public static final String KNOCK_IN = "knockIn";
-
-	/**
-	 * Mutation effect key. It is used in order to define the effect of the 
-	 * specific mutation. The corresponding value must be knockIn or knockOut.
-	 */
-	public static final String MUTATION_EFFECT = "mutation-effect";
-
-	/**
-	 * Knock out value. It is used for defining a knock out mutation.
-	 */
-	public static final String KNOCK_OUT = "knockOut";
-
-	
-	/**
-	 * Mutation strength key. It is used in order to define the power of the mutation.
-	 * The corresponding value must be Perpetual or Temporary.
-	 */
-	public static final String MUTATION_STRENGTH = "mutation-strength";
-
 
 	/**
 	 * Minimum duration of perturb key. It is used in order to define
@@ -309,6 +263,26 @@ public class SimulationFeaturesConstants {
 	public static final String MAX_DURATION_OF_PERTURB = "max-duration-of-perturb";
 	
 	/**
+	 * Min duration of the knock-in event key.
+	 */
+	public static final String MIN_KNOCKIN_DURATION = "min-knockin-duration";
+	
+	/**
+	 * Max duration of the knock-in event key.
+	 */
+	public static final String MAX_KNOCKIN_DURATION = "max-knockin-duration";
+	
+	/**
+	 * Min duration of the knock-out event key.
+	 */
+	public static final String MIN_KNOCKOUT_DURATION = "min-knockout-duration";
+	
+	/**
+	 * Max duration of the knock-out event key.
+	 */
+	public static final String MAX_KNOCKOUT_DURATION = "max-knockout-duration";
+	
+	/**
 	 * This key defines a Flip mutation
 	 */
 	public static final String FLIP_MUTATIONS = "Flip";
@@ -319,9 +293,19 @@ public class SimulationFeaturesConstants {
 	public static final String TEMPORARY_MUTATIONS = "Temporary";
 	
 	/**
-	 * This key defines a Perpetual mutation
+	 * This key defines a KnockIn/Knock out mutation
 	 */
-	public static final String PERPETUAL_MUTATIONS = "Perpetual";
+	public static final String KNOCKIN_KNOCKOUT_MUTATIONS = "KnockIn-KnockOut";
+	
+	/**
+	 * This key defines the number of nodes to be set as active.
+	 */
+	public static final String KNOCKIN_NODES = "knockIn-nodes";
+	
+	/**
+	 * This key defines the number of nodes to be set as deactive
+	 */
+	public static final String KNOCKOUT_NODES = "knockOut-nodes";
 	
 	/**
 	 * Number of matching network required key.
