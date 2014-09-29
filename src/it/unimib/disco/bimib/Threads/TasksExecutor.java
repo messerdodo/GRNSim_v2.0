@@ -29,10 +29,8 @@ public class TasksExecutor extends Thread{
 	public void run() {
 		while(!this.scheduler.isFinished()){
 			try {
-				System.out.println(this.getName() + " starts doing the task");
 				Task taskToPerform = this.scheduler.take();
 				boolean match = taskToPerform.doTask();
-				System.out.println(this.getName() + " has completed the task");
 				//Checks if the task produced a match, in this case the number of match will be incremented 
 				if(match)
 					this.scheduler.newMatch();
@@ -49,7 +47,6 @@ public class TasksExecutor extends Thread{
 		}	
 		//Simulation completed, so all the threads must be closed.
 		Thread.currentThread().interrupt();	
-		System.out.println(super.getName() + " closed!");
 	}
 
 }

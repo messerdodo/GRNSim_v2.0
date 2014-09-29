@@ -24,7 +24,6 @@ public class TasksQueue {
 	public synchronized void push(Task task) throws InterruptedException{
 		if(task != null && this.remaining > 0){
 			if(this.tasksQueue.size() >= this.remaining){
-				System.out.println("Mi metto in wait");
 				wait();
 			}
 			this.tasksQueue.add(task);

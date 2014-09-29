@@ -74,9 +74,7 @@ public class NetworkCreation implements Task {
 		Output.createFolder(this.outputFolder + "/" + networkFolderName);
 
 		//Stores the network file (GRNML)
-		System.out.println(this.outputFolder + "/" + networkFolderName + "/" + networkFileName);
 		Output.createGRNMLFile(graphManager.getGraph(), this.outputFolder + "/" + networkFolderName + "/" + networkFileName);
-
 		//Stores the ATM matrix
 		Output.createATMFile(atmManager.getAtm(), this.outputFolder + "/" + networkFolderName + "/" + atmFileName);
 		//Stores the attractors
@@ -99,6 +97,9 @@ public class NetworkCreation implements Task {
 		statistics.put(OutputConstants.NOT_FOUND_ATTRACTORS, 0);
 		
 		Output.createSynthesisFile(statistics, this.outputFolder + "/" + networkFolderName + "/" + synthesisFileName);
+		
+		//Output message
+		System.out.println("Network saved at " + this.outputFolder + "/" + networkFolderName + "/" + networkFileName);
 		
 		return true;
 		

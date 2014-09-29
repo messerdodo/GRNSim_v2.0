@@ -19,17 +19,27 @@ import it.unimib.disco.bimib.Utility.TaskFeaturesConstants;
 import java.util.Properties;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class Console {
 
 	public static void main(String[] args) {
 		
 		Properties inputArgs, taskFeatures, simulationFeatures;
-		int threads, requiredNetworks;
-		String taskToPerform, outputFolder, originalGRNMLPath;
+		int threads = 1, requiredNetworks;
+		String taskToPerform, outputFolder, originalGRNMLPath, treeFile;
 		ArrayList<Thread> activeThreads = new ArrayList<Thread>();
 		Task task = null;
 		TaskScheduler scheduler = null; 
+	
+		String beginningDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+	
+		//Program output initialization
+		System.out.println("GRNSim ver. 2.0");
+		System.out.println("BIMIB @ DISCo (Department of Informatics and Comunication) - University of Milano Bicocca");
+		System.out.println("****************************************************************");
+		
 		try{
 			//Converts the input arguments from a string array to a properties object.
 			inputArgs = Input.readInputArguments(args);
@@ -79,8 +89,6 @@ public class Console {
 				throw new MissingFeaturesException("The " + SimulationFeaturesConstants.MATCHING_NETWORKS + " key must be specified in the simulation features file.");
 			requiredNetworks = Integer.parseInt(simulationFeatures.getProperty(SimulationFeaturesConstants.MATCHING_NETWORKS));
 			
-			
-			
 			//Network creation (creation and simulation)
 			if(taskToPerform.equals(TaskFeaturesConstants.NETWORK_CREATION)){
 				//networkCreation(activeThreads, simulationFeatures, threads, outputFolder, requiredNetworks);
@@ -101,9 +109,23 @@ public class Console {
 				//Gets the given network
 				originalGRNMLPath = taskFeatures.getProperty(TaskFeaturesConstants.ORIGINAL_NETWORK_FILE);
 				task = new OpenAndSimulationTask(simulationFeatures,new HashMap<String,String>(), outputFolder, originalGRNMLPath); 
+			//Creates and tries to match with the given tree
+			}else if(taskToPerform.equals(TaskFeaturesConstants.CREATE_AND_MATCH)){
+				if(!taskFeatures.containsKey(TaskFeaturesConstants.TREE_FILE))
+					throw new MissingFeaturesException(TaskFeaturesConstants.TREE_FILE + " key must be specified in the task file.");
+				treeFile = taskFeatures.getProperty(TaskFeaturesConstants.TREE_FILE);
+				if(!simulationFeatures.containsKey(SimulationFeaturesConstants.UNMATCHING_STORE))
+					throw new MissingFeaturesException(SimulationFeaturesConstants.UNMATCHING_STORE + " key must be specified in the simulation file.");
+				task = new NetworkTreeMatchingTask(simulationFeatures,new HashMap<String,String>(), outputFolder, treeFile); 
 			}else{
 				throw new InputFormatException("Incorrect " + TaskFeaturesConstants.TASK_TO_PERFORM + " value in the task file.");
 			}
+			
+			//Output message
+			System.out.println("****************************************************************");
+			System.out.println("Dedicated threads: " + threads);
+			System.out.println(beginningDate + ": Simulation begining");
+			System.out.println("****************************************************************");
 			
 			//Starts the execution threads
 			scheduler = new TaskScheduler(task, requiredNetworks);
@@ -112,7 +134,16 @@ public class Console {
 				activeThreads.add(new TasksExecutor(scheduler, "Executor " + (thread + 1)));
 				activeThreads.get(thread).start();
 			}
-	
+			
+			//Main thread waits for sub threads conclusion
+			for(int thread = 0; thread < threads; thread ++){
+				try{
+					activeThreads.get(thread).join();
+				}catch(InterruptedException e){
+					
+				}
+			}
+			
 		}catch(Exception ex){
 			
 			
@@ -123,54 +154,16 @@ public class Console {
 				System.out.println(ex.getMessage());
 		}finally{
 			//Closes all the tasks
+			for(int thread = 0; thread < threads; thread ++){
+				activeThreads.get(thread).interrupt();
+			}
 			
-		}
-	}
-
-	
-	
-	/**
-	 * Network creation task
-	 * @param simulationFeatures: Simulation features
-	 * @param threads: Number of threads to use
-	 * @param outputFolder: Folder where place the output files.
-	 */
-/*	private static void networkCreation(ArrayList<Thread> activeThreads , Properties simulationFeatures, int threads, String outputFolder, int requiredNetworks){
-		NetworkCreation creationTask = new NetworkCreation(simulationFeatures,new HashMap<String,String>(), outputFolder); 
-		TaskScheduler scheduler = new TaskScheduler(creationTask, requiredNetworks);
-		//Launches 'threads' executor threads
-		for(int thread = 0; thread < threads; thread ++){
-			activeThreads.add(new TasksExecutor(scheduler, "Executor " + (thread + 1)));
-			activeThreads.get(thread).start();
-		}
-
-	}
-	
-	/**
-	 * Network modification task
-	 * @param simulationFeatures: Simulation features
-	 * @param threads: Number of threads to use
-	 * @param outputFolder: Folder where place the output files.
-	 * @param originalGRNMLPath: The path of the original GRNML file.
-	 * @throws NotExistingNodeException 
-	 * @throws IOException 
-	 * @throws SAXException 
-	 * @throws ParserConfigurationException 
-	 * @throws ParamDefinitionException 
-	 */
-/*	private static void networkModification(ArrayList<Thread> activeThreads, Properties simulationFeatures, int threads, String outputFolder, String originalGRNMLPath, int requiredNetworks) throws ParamDefinitionException, ParserConfigurationException, SAXException, IOException, NotExistingNodeException{
-
-		NetworkModificationTask editingTask = new NetworkModificationTask(simulationFeatures,new HashMap<String,String>(), outputFolder, originalGRNMLPath); 
-		TaskScheduler scheduler = new TaskScheduler(editingTask, requiredNetworks);
-		
-		//Launches 'threads' executor threads
-		for(int thread = 0; thread < threads; thread ++){
-			activeThreads.add(new TasksExecutor(scheduler, "Executor " + (thread + 1)));
-			activeThreads.get(thread).start();
+			//Ending simulation message
+			System.out.println("****************************************************************");
+			String endingDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+			System.out.println(endingDate + ": Simulation completed");
 		}
 		
+		
 	}
-	
-	*/
-	
 }

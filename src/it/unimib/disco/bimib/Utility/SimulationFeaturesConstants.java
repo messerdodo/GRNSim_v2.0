@@ -312,5 +312,10 @@ public class SimulationFeaturesConstants {
 	 */
 	public static final String MATCHING_NETWORKS = "matching-networks";
 	
+	/**
+	 * This key is used in order to specify if the unmatching network
+	 * must be stored.
+	 */
+	public static final String UNMATCHING_STORE = "unmatching-store";
 	
 }

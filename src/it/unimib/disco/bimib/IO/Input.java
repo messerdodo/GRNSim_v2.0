@@ -20,13 +20,10 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import java.util.ArrayList;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -285,5 +282,34 @@ public class Input {
 		return graphManager;	
 	}
 	
+	/**
+	 * This method allows to read a differentiation tree from file.
+	 * @param fileName: The name of the file
+	 * @return: An ArrayList of tree nodes. Each node is represented as an three items array.
+	 * The first one is the level, the second the node name and the last one is the parent.
+	 * @throws NullPointerException
+	 * @throws FileNotFoundException
+	 * @throws InputFormatException
+	 */
+	public static ArrayList<String[]> readTree(String fileName) 
+			throws NullPointerException, FileNotFoundException, InputFormatException{
+
+		if(fileName == null)
+			throw new NullPointerException("The file name must not be null");
+
+		String line;
+		ArrayList<String[]> readTree = new ArrayList<String[]>();
+		//Opens the output streams
+		File inputFile = new File(fileName);
+		Scanner reader = new Scanner(inputFile);
+		if(!(line = reader.nextLine()).equals("<Differentiation tree description file>"))
+			throw new InputFormatException("No differentiation tree description file specified");
+		//Reads all the file
+		while(reader.hasNext()){
+			line = reader.nextLine();
+			readTree.add(line.split(" "));
+		}
+		return readTree;
+	}
 	
 }

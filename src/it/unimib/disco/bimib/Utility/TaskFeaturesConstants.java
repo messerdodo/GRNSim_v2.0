@@ -32,6 +32,11 @@ public class TaskFeaturesConstants {
 	public static final String OPEN_AND_SIMULATE = "open-and-simulate";
 	
 	/**
+	 * This value specifies the network creation and match with the given tree.
+	 */
+	public static final String CREATE_AND_MATCH = "create-and-match";
+	
+	/**
 	 * This key specifies the number of threads to use
 	 */
 	public static final String THREADS = "threads";
@@ -46,4 +51,9 @@ public class TaskFeaturesConstants {
 	 * This key is used in order to specify the original grnml network file path
 	 */
 	public static final String ORIGINAL_NETWORK_FILE = "original-network-file";
+	
+	/**
+	 * This key is used in order to specify the tree path
+	 */
+	public static final String TREE_FILE = "tree-file";
 }

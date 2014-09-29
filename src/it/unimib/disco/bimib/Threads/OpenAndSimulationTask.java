@@ -20,9 +20,11 @@ import java.util.Properties;
 
 
 
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
+
 
 
 
@@ -77,9 +79,6 @@ public class OpenAndSimulationTask implements Task {
 		//Creates the network
 		GraphManager graphManager = this.originalNetwork.copy();
 
-		//Modifies the network
-		//graphManager.modify(simulationFeatures);
-
 		//Samples the network in order to find the attractors
 		SamplingManager samplingManager = new SamplingManager(simulationFeatures, graphManager);
 
@@ -100,7 +99,6 @@ public class OpenAndSimulationTask implements Task {
 		Output.createFolder(this.outputFolder + "/" + networkFolderName);
 
 		//Stores the network file (GRNML)
-		System.out.println(this.outputFolder + "/" + networkFolderName + "/" + networkFileName);
 		Output.createGRNMLFile(graphManager.getGraph(), this.outputFolder + "/" + networkFolderName + "/" + networkFileName);
 
 		//Stores the ATM matrix
@@ -126,6 +124,9 @@ public class OpenAndSimulationTask implements Task {
 
 		Output.createSynthesisFile(statistics, this.outputFolder + "/" + networkFolderName + "/" + synthesisFileName);
 
+		//Output message
+		System.out.println("Network saved at " + this.outputFolder + "/" + networkFolderName + "/" + networkFileName);
+				
 		//Always match
 		return true;
 
