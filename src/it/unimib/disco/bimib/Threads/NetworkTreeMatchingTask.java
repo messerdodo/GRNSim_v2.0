@@ -13,8 +13,10 @@ package it.unimib.disco.bimib.Threads;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Properties;
+
 
 
 
@@ -113,7 +115,8 @@ public class NetworkTreeMatchingTask implements Task {
 		if(deltas != null){
 			//Match
 			networkFolderName = "Match/network_" + graphManager.hashCode();
-			System.out.println("Matching network found.");
+			System.out.print("Matching network found. ");
+			System.out.println(Arrays.toString(deltas));
 		}else{
 			//Unmatch
 			networkFolderName = "Unmatch/network_" + graphManager.hashCode();

@@ -36,8 +36,8 @@ public class Console {
 		String beginningDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
 	
 		//Program output initialization
-		System.out.println("GRNSim ver. 2.0");
-		System.out.println("BIMIB @ DISCo (Department of Informatics and Comunication) - University of Milano Bicocca");
+		System.out.println("GRNSim ver. 2.0 - 2014");
+		System.out.println("BIMIB @ DISCo - University of Milano Bicocca");
 		System.out.println("****************************************************************");
 		
 		try{
@@ -124,7 +124,7 @@ public class Console {
 			//Output message
 			System.out.println("****************************************************************");
 			System.out.println("Dedicated threads: " + threads);
-			System.out.println(beginningDate + ": Simulation begining");
+			System.out.println(beginningDate + ": Simulation beginning");
 			System.out.println("****************************************************************");
 			
 			//Starts the execution threads

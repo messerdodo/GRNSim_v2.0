@@ -55,24 +55,34 @@ public class TesManager {
 	public double[] findCorrectTesTree(TesTree givenTree) throws TesTreeException {
 		int k = this.attractorsFinder.getAttractors().length;
 		int givenTreeDeepness = givenTree.getTreeDeppness();
+		//System.out.println("k = " + k + "   depth = " + givenTreeDeepness + " leafs = " + givenTree.getLeafsNodesNumber());
 		double[] correctDelta = null;
 		//Checks if the number of attractor is enough
-		if(k < givenTreeDeepness){
-		return null;}
+		if(k < givenTreeDeepness || k < givenTree.getLeafsNodesNumber()){
+			return null;
+		}
 
 		//Searches every possible combination of delta in the matrix 
 		ArrayList<double[]> combinations = deltaCombinations(this.atm.copyAtm(), this.attractorsFinder.getAttractors(), givenTreeDeepness);		
-
+		//No thresholds sequence can be created
+		if(combinations == null)
+			return null;
 		TesTree createdTree = null;
 		//Creates a new TES tree for each delta values combination
 		for(double[] deltas : combinations){
-			createdTree = new TesTree(deltas, this.atm.copyAtm(), this.attractorsFinder.getAttractors());
-			//Checks if the created tree is equal to the given differentiation tree.
-			//createdTree.print();
-			if(createdTree.tesTreeCompare(givenTree)){
-				correctDelta = deltas;
-				break;
-			}		
+			try{
+				createdTree = new TesTree(deltas, this.atm.copyAtm(), this.attractorsFinder.getAttractors());
+				//Checks if the created tree is equal to the given differentiation tree.
+				//createdTree.print();
+				if(createdTree.tesTreeCompare(givenTree)){
+					correctDelta = deltas;
+					createdTree.print();
+					givenTree.print();
+					break;
+				}		
+			}catch(TesTreeException e){
+				//Nope
+			}
 		}
 
 		//Returns the correct delta values
@@ -127,8 +137,7 @@ public class TesManager {
 	public int findMinHistogramDistanceTesTree(TesTree givenTree) throws TesTreeException {
 		int k = this.attractorsFinder.getAttractors().length;
 		int givenTreeDeepness = givenTree.getTreeDeppness();
-		
-		System.out.println("k " + k + " deepness " + givenTreeDeepness);
+	
 		//Checks if the number of attractor is enough
 		if(k < givenTreeDeepness){
 			return -1;
@@ -181,7 +190,7 @@ public class TesManager {
 				Collections.sort(values); 
 				
 				if(requiredTreeDeepness > values.size())
-					throw new TesTreeException("k ("+requiredTreeDeepness+") is bigger then the threshold's values ("+values.size() +")");
+					return null;
 				else{
 					//Gets the unstructured combinations 
 					ArrayList<Double> e = combinationCreator(values, requiredTreeDeepness);

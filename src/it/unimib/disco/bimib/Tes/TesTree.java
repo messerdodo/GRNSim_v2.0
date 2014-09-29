@@ -17,8 +17,10 @@ package it.unimib.disco.bimib.Tes;
 
 //System imports
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+
 //GRNSim imports
 import it.unimib.disco.bimib.Exceptions.TesTreeException;;
 
@@ -92,7 +94,7 @@ public class TesTree{
 					 * they are already connected or if there is a path between attractors i and 
 					 * there is a path k and between attractors k and j
 					 */
-					pathMatrix[i][j] = (pathMatrix[i][j] | (pathMatrix[i][k] & pathMatrix[k][j]));
+					pathMatrix[i][j] = (pathMatrix[i][j] || (pathMatrix[i][k] && pathMatrix[k][j]));
 				}
 			}
 		}
@@ -125,7 +127,7 @@ public class TesTree{
 
 			for(int att1 = 0; att1 < attractors.length; att1++){
 				for(int att2 = att1 + 1; att2 < attractors.length; att2++){
-					if(pathMatrix[att1][att2]  && pathMatrix[att2][att1]){
+					if(pathMatrix[att1][att2] && pathMatrix[att2][att1]){
 						int t1 = getTesByAttractor(myTes, attractors[att1]);
 						int t2 = getTesByAttractor(myTes, attractors[att2]);
 						//If there is a links between two tes they are merge 
@@ -177,7 +179,7 @@ public class TesTree{
 					node.getChild(i).setParent(node);
 				}
 
-				//For every children creates a new atm with the specified attractor in the tes(child)
+				//For every child creates a new atm with the specified attractor in the tes(child)
 				for(TesTreeNode child : node.getChildren()){
 					int nAttractors = child.getTes().sizeTes(), newRow = 0, newCol = 0;
 					double[][] reducedAtm = new double[nAttractors][nAttractors];
@@ -191,7 +193,7 @@ public class TesTree{
 							newCol++;
 						}
 					}
-					//Recopies all the values in the atm ionto the reduced atm
+					//Copies all the values in the atm into the reduced atm
 					for(int i : attPositions){
 						newCol = 0;
 						for(int j : attPositions){
@@ -390,7 +392,7 @@ public class TesTree{
 		//Gets all the possible child permutations
 		ArrayList<TesTreeNode[]> permutations = permutation(b, 0, childrenNumber);
 		do{
-			TesTreeNode[] A = b;
+			TesTreeNode[] A = node.getChildrenAsArray();
 			TesTreeNode[] B = permutations.get(p);
 			i = 0;
 			//Recursive calls for each couple of nodes.
@@ -663,6 +665,41 @@ public class TesTree{
 	}
 	
 */
+	
+	/**
+	 * This method returns the number of leaf nodes in the tree
+	 * @return
+	 */
+	public int getLeafsNodesNumber(){
+		return getLeafsNodesNumber(this.root);
+	}
+	
+	/**
+	 * Service method for the leaf nodes calculus.
+	 * @param node: Node for starting
+	 * @return The number of leaf nodes in the subtree
+	 */
+	private int getLeafsNodesNumber(TesTreeNode node){
+		if(node.getChildren().size() == 0)
+			return 1;
+		else{
+			int leafs = 0;
+			for(TesTreeNode child : node.getChildren())
+				leafs = leafs + getLeafsNodesNumber(child);
+			return leafs;
+		}
+	}
+	
+	
+	public void print(){
+		print(this.root);
+	}
+	
+	private void print(TesTreeNode node){
+		System.out.print(node.getNodeId() + " parent: " + (node.getParent() == null ? "Root" :node.getParent().getNodeId()));
+		for(TesTreeNode child : node.getChildren())
+				print(child);
+	}
 	
 }
 
