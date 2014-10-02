@@ -17,7 +17,6 @@ package it.unimib.disco.bimib.Tes;
 
 //System imports
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 

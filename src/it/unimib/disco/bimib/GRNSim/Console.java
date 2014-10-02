@@ -32,7 +32,8 @@ public class Console {
 		ArrayList<Thread> activeThreads = new ArrayList<Thread>();
 		Task task = null;
 		TaskScheduler scheduler = null; 
-	
+		HashMap<String, String> matchingOutputs = null, unmatchingOutputs = null;
+		
 		String beginningDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
 	
 		//Program output initialization
@@ -91,16 +92,16 @@ public class Console {
 			
 			//Network creation (creation and simulation)
 			if(taskToPerform.equals(TaskFeaturesConstants.NETWORK_CREATION)){
-				//networkCreation(activeThreads, simulationFeatures, threads, outputFolder, requiredNetworks);
-				task = new NetworkCreation(simulationFeatures,new HashMap<String,String>(), outputFolder); 
+				matchingOutputs = new HashMap<String, String>();
+				task = new NetworkCreation(simulationFeatures, matchingOutputs, outputFolder); 
 			//Network Modification (editing and simulation)
 			}else if(taskToPerform.equals(TaskFeaturesConstants.NETWORK_MODIFICATION)){
 				//Gets the original network grnml file name.
 				if(!taskFeatures.containsKey(TaskFeaturesConstants.ORIGINAL_NETWORK_FILE))
 					throw new MissingFeaturesException(TaskFeaturesConstants.ORIGINAL_NETWORK_FILE + " key must be specified in the task features file."); 
 				originalGRNMLPath = taskFeatures.getProperty(TaskFeaturesConstants.ORIGINAL_NETWORK_FILE);
-				//networkModification(activeThreads, simulationFeatures, threads, outputFolder, originalGRNMLPath, requiredNetworks);
-				task = new NetworkModificationTask(simulationFeatures,new HashMap<String,String>(), outputFolder, originalGRNMLPath); 
+				matchingOutputs = new HashMap<String, String>();
+				task = new NetworkModificationTask(simulationFeatures, matchingOutputs, outputFolder, originalGRNMLPath); 
 			//Open and simulation (opens a given network and simulates it)
 			}else if(taskToPerform.equals(TaskFeaturesConstants.OPEN_AND_SIMULATE)){
 				//Gets the original network grnml file name.
@@ -108,7 +109,8 @@ public class Console {
 					throw new MissingFeaturesException(TaskFeaturesConstants.ORIGINAL_NETWORK_FILE + " key must be specified in the task features file."); 
 				//Gets the given network
 				originalGRNMLPath = taskFeatures.getProperty(TaskFeaturesConstants.ORIGINAL_NETWORK_FILE);
-				task = new OpenAndSimulationTask(simulationFeatures,new HashMap<String,String>(), outputFolder, originalGRNMLPath); 
+				matchingOutputs = new HashMap<String, String>();
+				task = new OpenAndSimulationTask(simulationFeatures, matchingOutputs, outputFolder, originalGRNMLPath); 
 			//Creates and tries to match with the given tree
 			}else if(taskToPerform.equals(TaskFeaturesConstants.CREATE_AND_MATCH)){
 				if(!taskFeatures.containsKey(TaskFeaturesConstants.TREE_FILE))
@@ -116,7 +118,16 @@ public class Console {
 				treeFile = taskFeatures.getProperty(TaskFeaturesConstants.TREE_FILE);
 				if(!simulationFeatures.containsKey(SimulationFeaturesConstants.UNMATCHING_STORE))
 					throw new MissingFeaturesException(SimulationFeaturesConstants.UNMATCHING_STORE + " key must be specified in the simulation file.");
-				task = new NetworkTreeMatchingTask(simulationFeatures,new HashMap<String,String>(), outputFolder, treeFile); 
+				if(!simulationFeatures.containsKey(SimulationFeaturesConstants.MATCHING_METHOD))
+					throw new MissingFeaturesException(SimulationFeaturesConstants.MATCHING_METHOD + " key must be specified in the simulation file.");
+				if((simulationFeatures.get(SimulationFeaturesConstants.MATCHING_METHOD).equals(SimulationFeaturesConstants.MIN_DISTANCE) ||
+					simulationFeatures.get(SimulationFeaturesConstants.MATCHING_METHOD).equals(SimulationFeaturesConstants.MIN_HISTOGRAM_DISTANCE)) &&
+					!simulationFeatures.containsKey(SimulationFeaturesConstants.THRESHOLD))
+					throw new MissingFeaturesException(SimulationFeaturesConstants.THRESHOLD + " key must be specified in the simulation file.");
+				
+				matchingOutputs = new HashMap<String, String>();
+				unmatchingOutputs = new HashMap<String, String>();
+				task = new NetworkTreeMatchingTask(simulationFeatures, matchingOutputs, unmatchingOutputs, outputFolder, treeFile); 
 			}else{
 				throw new InputFormatException("Incorrect " + TaskFeaturesConstants.TASK_TO_PERFORM + " value in the task file.");
 			}
@@ -162,6 +173,9 @@ public class Console {
 			System.out.println("****************************************************************");
 			String endingDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
 			System.out.println(endingDate + ": Simulation completed");
+			System.out.println("Matching networks: " + matchingOutputs.size());
+			if(unmatchingOutputs != null)
+				System.out.println("Unmatching networks: " + unmatchingOutputs.size());
 		}
 		
 		

@@ -318,4 +318,28 @@ public class SimulationFeaturesConstants {
 	 */
 	public static final String UNMATCHING_STORE = "unmatching-store";
 	
+	/**
+	 * This key is used in order to specify the tree comparison method.
+	 */
+	public static final String MATCHING_METHOD = "matching-method";
+	
+	/**
+	 * Value for perfect comparison between two trees.
+	 */
+	public static final String PERFECT = "Perfect";
+	
+	/**
+	 * Value for min distance comparison between two trees.
+	 */
+	public static final String MIN_DISTANCE = "MinDistance";
+	
+	/**
+	 * Value for min histogram distance comparison between two trees.
+	 */
+	public static final String MIN_HISTOGRAM_DISTANCE = "MinHistogramDistance";
+	
+	/**
+	 * This key is used in order to specify the threshold for the matching
+	 */
+	public static final String THRESHOLD = "threshold";
 }

@@ -92,11 +92,12 @@ public class NetworkModificationTask implements Task {
 		AtmManager atmManager = new AtmManager(simulationFeatures, samplingManager, mutationManager, graphManager.getNodesNumber());
 
 		//Saves the network in the correct folder
-		String networkFolderName = "network_" + graphManager.hashCode();
-		String networkFileName = graphManager.hashCode() + "_network.grnml";
-		String atmFileName = graphManager.hashCode() + "_atm.csv";
-		String attractorsFileName = graphManager.hashCode() + "_attractors.csv";
-		String synthesisFileName = graphManager.hashCode() + "_synthesis.csv";
+		String simulationID = String.valueOf(graphManager.hashCode());
+		String networkFolderName = "network_" + simulationID;
+		String networkFileName = simulationID + "_network.grnml";
+		String atmFileName = simulationID + "_atm.csv";
+		String attractorsFileName = simulationID + "_attractors.csv";
+		String synthesisFileName = simulationID + "_synthesis.csv";
 		
 		//Creates the folder
 		Output.createFolder(this.outputFolder + "/" + networkFolderName);
@@ -111,7 +112,7 @@ public class NetworkModificationTask implements Task {
 
 		//Saves the statistics
 		Properties statistics = new Properties();
-		statistics.put(OutputConstants.SIMULATION_ID, graphManager.hashCode());
+		statistics.put(OutputConstants.SIMULATION_ID, simulationID);
 		statistics.put(OutputConstants.CLUSTERING_COEFFICIENT, NetworkStructureStatistics.getClusteringCoefficient(graphManager));
 		statistics.put(OutputConstants.AVERAGE_BIAS, NetworkStructureStatistics.getAverageBiasValue(graphManager));
 		statistics.put(OutputConstants.AVERAGE_PATH_LENGTH, NetworkStructureStatistics.getAveragePath(graphManager));
@@ -127,6 +128,9 @@ public class NetworkModificationTask implements Task {
 		
 		Output.createSynthesisFile(statistics, this.outputFolder + "/" + networkFolderName + "/" + synthesisFileName);
 
+		//Stores the outputs folder
+		this.outputs.put(simulationID, this.outputFolder + "/" + networkFolderName + "/");
+				
 		//Output message
 		System.out.println("Network saved at " + this.outputFolder + "/" + networkFolderName + "/" + networkFileName);
 				

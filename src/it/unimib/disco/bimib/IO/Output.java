@@ -11,12 +11,14 @@
 package it.unimib.disco.bimib.IO;
 
 //System imports
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+
 
 //GRNSim imports
 import it.unimib.disco.bimib.Atms.Atm;
@@ -265,9 +267,6 @@ public class Output {
 		//Average attractors lenght
 		if(!results.containsKey(OutputConstants.ATTRACTORS_LENGTH))
 			throw new Exception(OutputConstants.ATTRACTORS_LENGTH + " key must be in the results object");
-		//Distance from the given tree
-		if(!results.containsKey(OutputConstants.TREE_DISTANCE))
-			throw new Exception(OutputConstants.TREE_DISTANCE + " key must be in the results object");
 		//Not found attractors
 		if(!results.containsKey(OutputConstants.NOT_FOUND_ATTRACTORS))
 			throw new Exception(OutputConstants.NOT_FOUND_ATTRACTORS + " key must be in the results object");
@@ -304,10 +303,6 @@ public class Output {
 		printer.print(results.get(OutputConstants.ATTRACTORS_LENGTH) + ",");
 		printer.flush();	
 		
-		//Writes the distance from the given tree
-		printer.print(results.get(OutputConstants.TREE_DISTANCE) + ",");
-		printer.flush();	
-		
 		//Writes the number of not found attractors
 		printer.print(results.get(OutputConstants.NOT_FOUND_ATTRACTORS));
 		printer.flush();	
@@ -316,6 +311,35 @@ public class Output {
 		writer.close();
 	}
 	
+	/**
+	 * This method creates the thresholds and distance file.
+	 * It is used only when there's a tree matching (completely o partial) task
+	 * @param fileName: name/path of the thresholds-distance file
+	 * @param thresholds: double array of thresholds
+	 * @param distance: The distance between the created tree and the given tree. 
+	 * @throws IOException 
+	 */
+	public static void createThresholdsFile(String fileName, double[] thresholds, int distance) throws IOException{
+		//Checks the param values
+		if(fileName == null)
+			throw new NullPointerException("The file name must not be null for the thresholds file creation");
+		if(thresholds == null)
+			throw new NullPointerException("The thresholds array must be not null.");
+		
+		//Defines the writer streams
+		FileWriter writer = new FileWriter(fileName);
+		PrintWriter printer = new PrintWriter(writer);	
+
+		//Writes the thresholds
+		printer.print("Thresholds\t" + Arrays.toString(thresholds));
+		printer.flush();
+		//Writes the tree distance
+		printer.print("Tree distance\t" + distance);
+		printer.flush();
+		
+		printer.close();
+		writer.close();
+	}
 	
 	
 	

@@ -1,6 +1,5 @@
 package it.unimib.disco.bimib.Tes;
 
-import static org.junit.Assert.*;
 import it.unimib.disco.bimib.Exceptions.TesTreeException;
 
 import org.junit.Test;
