@@ -31,8 +31,6 @@ public class Atm {
 	private int[] totalFrequencyRows;
 	private ArrayList<double[][]> storedAtmNotMatching = new ArrayList<double[][]>();
 
-
-
 	/**
 	 * This is the constructor where there is initialized the attractor's interface
 	 * and the call for the main method
@@ -52,7 +50,6 @@ public class Atm {
 		this.attractorsFinder = attractorsFinder;
 		this.mutation = mutation;
 	}
-
 
 	/**
 	 * Generic constructor
@@ -75,7 +72,6 @@ public class Atm {
 		this.normalize();
 
 	}
-	
 	
 	public void createAtm(Object[] attractors, int perturbExperiments, double perturbStatesRatio) 
 			throws MissingFeaturesException, ParamDefinitionException, NotExistingAttractorsException, 
@@ -151,11 +147,8 @@ public class Atm {
 		storeAtmNotMatching(this.atm);
 	}
 	
-	
-
-	
 	/**
-	 * This method recreates the Atm matrix when for a state there isn't its attarctors
+	 * This method recreates the Atm matrix when for a state there isn't its attractor
 	 * @param newAttractors : an array with all the attractors of the network
 	 * @throws NotExistingAttractorsException
 	 */

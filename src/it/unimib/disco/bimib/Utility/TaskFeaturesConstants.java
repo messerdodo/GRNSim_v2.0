@@ -56,4 +56,19 @@ public class TaskFeaturesConstants {
 	 * This key is used in order to specify the tree path
 	 */
 	public static final String TREE_FILE = "tree-file";
+	
+	/**
+	 * This key is used in order to specify if saves the (state, attractor, position) tuple file.
+	 */
+	public static final String STORE_STATES_ATTRACTORS_FILE = "store-states-attractors-file";
+	
+	/**
+	 * YES value
+	 */
+	public static final String YES = "yes";
+	
+	/**
+	 * NO value
+	 */
+	public static final String NO = "no";
 }

@@ -21,9 +21,13 @@ import java.util.Properties;
 
 
 
+
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
+
+
 
 
 
@@ -46,6 +50,8 @@ public class OpenAndSimulationTask implements Task {
 	private HashMap<String, String> outputs;
 	private String outputFolder;
 	private GraphManager originalNetwork;
+	private double[][] originalAtm;
+	private boolean statesAttractorsStoring;
 	
 	/**
 	 * Generic constructor
@@ -57,7 +63,8 @@ public class OpenAndSimulationTask implements Task {
 	 * @throws ParserConfigurationException 
 	 * @throws ParamDefinitionException 
 	 */
-	public OpenAndSimulationTask(Properties simulationFeatures, HashMap<String, String> outputs, String outputFolder, String originalNetworkFile) throws ParamDefinitionException, ParserConfigurationException, SAXException, IOException, NotExistingNodeException{
+	public OpenAndSimulationTask(Properties simulationFeatures, HashMap<String, String> outputs, String outputFolder, String originalNetworkFile, boolean statesAttractorsStoring) throws ParamDefinitionException, ParserConfigurationException, SAXException, IOException, NotExistingNodeException{
+		
 		//Parameters checking
 		if(simulationFeatures == null)
 			throw new NullPointerException("The simulation features must be not null.");
@@ -69,8 +76,11 @@ public class OpenAndSimulationTask implements Task {
 		this.simulationFeatures = simulationFeatures;
 		this.outputFolder = outputFolder;
 		this.outputs = outputs;
+		this.statesAttractorsStoring = statesAttractorsStoring;
+		
+		//Reads the network from the input file
 		this.originalNetwork = Input.readGRNMLFile(originalNetworkFile);
-	
+		
 	}
 	
 	@Override
@@ -86,7 +96,7 @@ public class OpenAndSimulationTask implements Task {
 		MutationManager mutationManager = new MutationManager(graphManager, samplingManager, simulationFeatures);
 
 		//Creates the ATM manager and the ATM matrix
-		AtmManager atmManager = new AtmManager(simulationFeatures, samplingManager, mutationManager, graphManager.getNodesNumber());
+		AtmManager atmManager = new AtmManager(this.originalAtm.clone(), samplingManager, mutationManager, graphManager.getNodesNumber());
 
 		//Saves the network in the correct folder
 		String simulationID = String.valueOf(graphManager.hashCode());
@@ -95,6 +105,7 @@ public class OpenAndSimulationTask implements Task {
 		String atmFileName = simulationID + "_atm.csv";
 		String attractorsFileName = simulationID + "_attractors.csv";
 		String synthesisFileName = simulationID + "_synthesis.csv";
+		String statesAttractorsFileName = simulationID + "_statesAttractors.csv";
 		
 		//Creates the folder
 		Output.createFolder(this.outputFolder + "/" + networkFolderName);
@@ -106,7 +117,11 @@ public class OpenAndSimulationTask implements Task {
 		Output.createATMFile(atmManager.getAtm(), this.outputFolder + "/" + networkFolderName + "/" + atmFileName);
 		//Stores the attractors
 		Output.saveAttractorsFile(samplingManager.getAttractorFinder(), this.outputFolder + "/" + networkFolderName + "/" + attractorsFileName);
-
+		//If required, stores the state-attractors file.
+		if(this.statesAttractorsStoring)
+			Output.saveStatesAttractorsFile(this.outputFolder + "/" + networkFolderName + "/" + statesAttractorsFileName, samplingManager.getAttractorFinder());
+		
+		
 		//Saves the statistics
 		Properties statistics = new Properties();
 		statistics.put(OutputConstants.SIMULATION_ID, graphManager.hashCode());

@@ -12,6 +12,7 @@ package it.unimib.disco.bimib.IO;
 
 //System imports
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.io.File;
@@ -20,12 +21,17 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 
+
+
+
 //GRNSim imports
 import it.unimib.disco.bimib.Atms.Atm;
 import it.unimib.disco.bimib.Exceptions.*;
 import it.unimib.disco.bimib.Networks.*;
 import it.unimib.disco.bimib.Sampling.AttractorsFinder;
+import it.unimib.disco.bimib.Sampling.BruteForceSampling;
 import it.unimib.disco.bimib.Utility.OutputConstants;
+import it.unimib.disco.bimib.Utility.SimulationFeaturesConstants;
 /*import Statistics.DynamicPerturbation;
 import Statistics.NetworkStructureStatistics;
 import Statistics.SimulationResult;
@@ -331,7 +337,7 @@ public class Output {
 		PrintWriter printer = new PrintWriter(writer);	
 
 		//Writes the thresholds
-		printer.print("Thresholds\t" + Arrays.toString(thresholds));
+		printer.print("Thresholds\t" + Arrays.toString(thresholds) + "\n");
 		printer.flush();
 		//Writes the tree distance
 		printer.print("Tree distance\t" + distance);
@@ -341,6 +347,45 @@ public class Output {
 		writer.close();
 	}
 	
+	/**
+	 * This method saves the tuple (state, attractor, position) in a csv file.
+	 * The first row of the file specifies the type of the attractor finder used in the simulation.
+	 * @param fileName: The name of the file
+	 * @param finder: The attractor finder object used
+	 * @throws IOException
+	 */
+	public static void saveStatesAttractorsFile(String fileName, AttractorsFinder finder) throws IOException{
+		//Checks the param values
+		if(fileName == null)
+			throw new NullPointerException("The file name must not be null for the states-attractors file");
+		if(finder == null)
+			throw new NullPointerException("The AttracorsFinder object must be not null for the states-attractors file");
+		
+		//Defines the writer streams
+		FileWriter writer = new FileWriter(fileName);
+		PrintWriter printer = new PrintWriter(writer);
+		
+		//Attractor finder type.
+		if(finder instanceof BruteForceSampling)
+			printer.println(SimulationFeaturesConstants.BRUTE_FORCE);
+		else
+			printer.println(SimulationFeaturesConstants.PARTIAL_SAMPLING);
+		printer.flush();
+		
+		HashMap<String, String> statesAttractors = finder.getStatesAttractorsCouples();
+		HashMap<String, Integer> statesPositions = finder.getStatesPositionsCouples();
+		//Writes the tuple as state,attractor,position
+		for(String state : statesAttractors.keySet()){
+			printer.print(state + ",");
+			printer.print(statesAttractors.get(state) + ",");
+			printer.println(statesPositions.get(state));
+			printer.flush();
+		}
+		
+		//Closes the stream
+		printer.close();
+		writer.close();
+	}
 	
 	
 	/**

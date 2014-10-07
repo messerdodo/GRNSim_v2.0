@@ -13,6 +13,7 @@ package it.unimib.disco.bimib.Sampling;
 //System imports
 import java.util.ArrayList;
 import java.util.HashMap;
+
 //GRNSim imports
 import it.unimib.disco.bimib.Exceptions.*;
 import it.unimib.disco.bimib.Networks.GraphManager;
@@ -268,6 +269,31 @@ public class BruteForceSampling extends BinarySamplingMethod {
 
 		return copiedSampling;
 
+	}
+
+	@Override
+	/**
+	 * This method returns the couples state-attractor as an HashMap
+	 */
+	public HashMap<String, String> getStatesAttractorsCouples() {
+		HashMap<String, String> statesAttractors = new HashMap<String, String>();
+		//Puts the each couple (state, attractor) in the statesAttractors object
+		for(int i = 0; i < this.attractors.length; i++)
+			statesAttractors.put(Integer.toBinaryString(i), this.attractors[i]);
+
+		return statesAttractors;
+	}
+
+	@Override
+	/**
+	 * This method returns the couples state-position as an HashMap.
+	 */
+	public HashMap<String, Integer> getStatesPositionsCouples() {
+		HashMap<String, Integer> statesPositions = new HashMap<String, Integer>();
+		//Puts the each couple (state, position) in the statesPositions object
+		for(int i = 0; i < this.positions.length; i++)
+			statesPositions.put(Integer.toBinaryString(i), this.positions[i]);
+		return statesPositions;
 	}
 
 }

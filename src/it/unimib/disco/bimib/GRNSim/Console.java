@@ -33,6 +33,8 @@ public class Console {
 		Task task = null;
 		TaskScheduler scheduler = null; 
 		HashMap<String, String> matchingOutputs = null, unmatchingOutputs = null;
+		boolean statesAttractorsFileStoring;
+		
 		
 		String beginningDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
 	
@@ -90,10 +92,16 @@ public class Console {
 				throw new MissingFeaturesException("The " + SimulationFeaturesConstants.MATCHING_NETWORKS + " key must be specified in the simulation features file.");
 			requiredNetworks = Integer.parseInt(simulationFeatures.getProperty(SimulationFeaturesConstants.MATCHING_NETWORKS));
 			
+			if(!taskFeatures.containsKey(TaskFeaturesConstants.STORE_STATES_ATTRACTORS_FILE) ||
+					taskFeatures.getProperty(TaskFeaturesConstants.STORE_STATES_ATTRACTORS_FILE).equals(TaskFeaturesConstants.YES))
+				statesAttractorsFileStoring = true;
+			else
+				statesAttractorsFileStoring = false;
+			
 			//Network creation (creation and simulation)
 			if(taskToPerform.equals(TaskFeaturesConstants.NETWORK_CREATION)){
 				matchingOutputs = new HashMap<String, String>();
-				task = new NetworkCreation(simulationFeatures, matchingOutputs, outputFolder); 
+				task = new NetworkCreation(simulationFeatures, matchingOutputs, outputFolder, statesAttractorsFileStoring); 
 			//Network Modification (editing and simulation)
 			}else if(taskToPerform.equals(TaskFeaturesConstants.NETWORK_MODIFICATION)){
 				//Gets the original network grnml file name.
@@ -101,7 +109,7 @@ public class Console {
 					throw new MissingFeaturesException(TaskFeaturesConstants.ORIGINAL_NETWORK_FILE + " key must be specified in the task features file."); 
 				originalGRNMLPath = taskFeatures.getProperty(TaskFeaturesConstants.ORIGINAL_NETWORK_FILE);
 				matchingOutputs = new HashMap<String, String>();
-				task = new NetworkModificationTask(simulationFeatures, matchingOutputs, outputFolder, originalGRNMLPath); 
+				task = new NetworkModificationTask(simulationFeatures, matchingOutputs, outputFolder, originalGRNMLPath, statesAttractorsFileStoring); 
 			//Open and simulation (opens a given network and simulates it)
 			}else if(taskToPerform.equals(TaskFeaturesConstants.OPEN_AND_SIMULATE)){
 				//Gets the original network grnml file name.
@@ -110,7 +118,7 @@ public class Console {
 				//Gets the given network
 				originalGRNMLPath = taskFeatures.getProperty(TaskFeaturesConstants.ORIGINAL_NETWORK_FILE);
 				matchingOutputs = new HashMap<String, String>();
-				task = new OpenAndSimulationTask(simulationFeatures, matchingOutputs, outputFolder, originalGRNMLPath); 
+				task = new OpenAndSimulationTask(simulationFeatures, matchingOutputs, outputFolder, originalGRNMLPath, statesAttractorsFileStoring); 
 			//Creates and tries to match with the given tree
 			}else if(taskToPerform.equals(TaskFeaturesConstants.CREATE_AND_MATCH)){
 				if(!taskFeatures.containsKey(TaskFeaturesConstants.TREE_FILE))
@@ -127,7 +135,7 @@ public class Console {
 				
 				matchingOutputs = new HashMap<String, String>();
 				unmatchingOutputs = new HashMap<String, String>();
-				task = new NetworkTreeMatchingTask(simulationFeatures, matchingOutputs, unmatchingOutputs, outputFolder, treeFile); 
+				task = new NetworkTreeMatchingTask(simulationFeatures, matchingOutputs, unmatchingOutputs, outputFolder, treeFile, statesAttractorsFileStoring); 
 			}else{
 				throw new InputFormatException("Incorrect " + TaskFeaturesConstants.TASK_TO_PERFORM + " value in the task file.");
 			}

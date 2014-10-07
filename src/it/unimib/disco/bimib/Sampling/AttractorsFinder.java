@@ -131,5 +131,14 @@ public interface AttractorsFinder {
 	 * @return the number of not found attractors
 	 */
 	public int getAttractorsNotFound();
-
+	
+	/**
+	 * This method returns the couples state-attractor as an HashMap
+	 */
+	public HashMap<String, String> getStatesAttractorsCouples();
+	
+	/**
+	 * This method returns the couples state-position as an HashMap.
+	 */
+	public HashMap<String, Integer> getStatesPositionsCouples();
 }

@@ -14,16 +14,20 @@ import it.unimib.disco.bimib.Networks.GraphManager;
 import it.unimib.disco.bimib.Functions.*;
 import it.unimib.disco.bimib.Utility.SimulationFeaturesConstants;
 
+
 //System imports
 import java.util.Properties;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
 import java.util.ArrayList;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -100,8 +104,7 @@ public class Input {
 	
 		return taskFeatures;
 	}
-	
-	
+		
 	/**
 	 * This method reads all the simulation features specified in the fileName file.
 	 * That features are used as simulation parameters.
@@ -312,4 +315,44 @@ public class Input {
 		return readTree;
 	}
 	
+	/**
+	 * This method allows to read and import an ATM from file.
+	 * The atm file must be a csv file with the matrix inside.
+	 * @param atmFileName: The atm file path.
+	 * @return The atm read from file.
+	 * @throws IOException 
+	 */
+	public static double[][] readAtm(String atmFileName) throws IOException{
+		double[][] atm;
+		int n, row = 0;
+		String[] splittedLine;
+		
+		//Param checking
+		if(atmFileName == null)
+			throw new NullPointerException("The atm file name must be not null"); 
+		//Opens the input streams
+		File inputFile = new File(atmFileName);
+		Scanner reader = new Scanner(inputFile);
+		//Reads the first line of the atm matrix file in order to obtain the matrix dimension.
+		splittedLine = reader.nextLine().split(",");
+		n = splittedLine.length;
+		atm = new double[n][n];
+		//Puts the values for the first row in the atm matrix
+		for(int i = 0; i < n; i ++){
+			atm[row][i] = Double.valueOf(splittedLine[i]);
+		}
+		row = row + 1;
+		//Puts all the values in the atm matrix
+		while(reader.hasNext() && row < n){
+			splittedLine = reader.nextLine().split(",");
+			for(int i = 0; i < n; i ++){
+				atm[row][i] = Double.valueOf(splittedLine[i]);
+			}
+			row = row + 1;
+		}
+		//Checks the file format (n by n matrix) 
+		if(row != 0)
+			throw new IOException("Format error in the atm file. The matrix must be " + n + "x" + n +" matrix");
+		return atm;
+	}
 }

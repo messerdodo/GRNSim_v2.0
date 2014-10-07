@@ -18,6 +18,8 @@ import java.util.Properties;
 
 
 
+
+
 //GRNSim imports
 import it.unimib.disco.bimib.Networks.GraphManager;
 import it.unimib.disco.bimib.Sampling.SamplingManager;
@@ -41,11 +43,16 @@ public class NetworkTreeMatchingTask implements Task {
 	private String outputFolder;
 	private TesTree differentiationTree;
 	private boolean unmatchingStore;
+	private boolean statesAttractorsStoring;
 	
 	/**
 	 * Generic constructor
-	 * @param listener: thread listener object
 	 * @param simulationFeatures: Properties object with the simulation features
+	 * @param matchingOutputs: network-output file couples for matching networks
+	 * @param unmatchingOutputs: network-output file couples for unmatching networks
+	 * @param treePath: path of the differentiation tree file.
+	 * @param outputFolder: The folder where put the outputs
+	 * @param statesAttractorsStoring: Specifies if the statesAttractors file must be stored
 	 * @throws ParamDefinitionException 
 	 * @throws InputFormatException 
 	 * @throws FileNotFoundException 
@@ -54,7 +61,7 @@ public class NetworkTreeMatchingTask implements Task {
 	 * @throws NumberFormatException 
 	 */
 	public NetworkTreeMatchingTask(Properties simulationFeatures, HashMap<String, String> matchingOutputs,
-			HashMap<String, String> unmatchingOutputs, String outputFolder, String treePath) 
+			HashMap<String, String> unmatchingOutputs, String outputFolder, String treePath, boolean statesAttractorsStoring) 
 					throws ParamDefinitionException, NullPointerException, FileNotFoundException, InputFormatException, NumberFormatException, TesTreeException{
 		//Parameters checking
 		if(simulationFeatures == null)
@@ -75,6 +82,7 @@ public class NetworkTreeMatchingTask implements Task {
 		this.matchingOutputs = matchingOutputs;
 		this.unmatchingOutputs = unmatchingOutputs;
 		this.unmatchingStore = simulationFeatures.getProperty(SimulationFeaturesConstants.UNMATCHING_STORE).equals(SimulationFeaturesConstants.YES) ? true : false;
+		this.statesAttractorsStoring = statesAttractorsStoring;
 		
 		//Creates the tree
 		this.differentiationTree = TesManager.createTesTreeFromFile(Input.readTree(treePath));
@@ -146,6 +154,8 @@ public class NetworkTreeMatchingTask implements Task {
 			String attractorsFileName = simulationID + "_attractors.csv";
 			String synthesisFileName = simulationID + "_synthesis.csv";
 			String thresholdsDistanceFileName = simulationID + "_thresholds.tsv";
+			String statesAttractorsFileName = simulationID + "_statesAttractors.csv";
+			
 			//Creates the folder
 			Output.createFolder(this.outputFolder + "/" + networkFolderName);
 
@@ -155,7 +165,10 @@ public class NetworkTreeMatchingTask implements Task {
 			Output.createATMFile(atmManager.getAtm(), this.outputFolder + "/" + networkFolderName + "/" + atmFileName);
 			//Stores the attractors
 			Output.saveAttractorsFile(samplingManager.getAttractorFinder(), this.outputFolder + "/" + networkFolderName + "/" + attractorsFileName);
-
+			//If required, stores the state-attractors file.
+			if(statesAttractorsStoring)
+				Output.saveStatesAttractorsFile(this.outputFolder + "/" + networkFolderName + "/" + statesAttractorsFileName, samplingManager.getAttractorFinder());
+			
 			//Saves the statistics
 			Properties statistics = new Properties();
 			statistics.put(OutputConstants.SIMULATION_ID, simulationID);

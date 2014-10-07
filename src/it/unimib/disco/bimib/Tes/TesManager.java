@@ -2,7 +2,6 @@ package it.unimib.disco.bimib.Tes;
 
 //System imports
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 //GRNSim imports
@@ -55,7 +54,6 @@ public class TesManager {
 	public double[] findCorrectTesTree(TesTree givenTree) throws TesTreeException {
 		int k = this.attractorsFinder.getAttractors().length;
 		int givenTreeDeepness = givenTree.getTreeDeppness();
-		//System.out.println("k = " + k + "   depth = " + givenTreeDeepness + " leafs = " + givenTree.getLeafsNodesNumber());
 		double[] correctDelta = null;
 		//Checks if the number of attractor is enough
 		if(k < givenTreeDeepness || k < givenTree.getLeafsNodesNumber()){
@@ -73,11 +71,8 @@ public class TesManager {
 			try{
 				createdTree = new TesTree(deltas, this.atm.copyAtm(), this.attractorsFinder.getAttractors());
 				//Checks if the created tree is equal to the given differentiation tree.
-				//createdTree.print();
 				if(createdTree.tesTreeCompare(givenTree)){
 					correctDelta = deltas;
-					createdTree.print();
-					givenTree.print();
 					break;
 				}		
 			}catch(TesTreeException e){
@@ -162,12 +157,9 @@ public class TesManager {
 			currentDistance = createdTree.tesTreeHistogramComparison(givenTree);
 			if(currentDistance == 0){
 				minDistance = currentDistance;
-				System.out.println("Min Distance for: " + Arrays.toString(deltas) + " is " + minDistance);
-
 			}else{
 				//Calculates the min distance.
 				minDistance = (minDistance == -1 ? currentDistance : Math.min(currentDistance, minDistance));	
-				System.out.println("Min Distance for: " + Arrays.toString(deltas) + " is " + minDistance + " current distance " + currentDistance);
 			}
 			i++;
 		}

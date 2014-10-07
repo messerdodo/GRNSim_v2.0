@@ -27,13 +27,16 @@ public class NetworkCreation implements Task {
 	private Properties simulationFeatures;
 	private HashMap<String, String> outputs;
 	private String outputFolder;
+	private boolean statesAttractorsStoring;
 	
 	/**
 	 * Generic constructor
-	 * @param listener: thread listener object
 	 * @param simulationFeatures: Properties object with the simulation features
+	 * @param outputs: network-output file matching.
+	 * @param outputFolder: The folder where put the outputs
+	 * @param statesAttractorsStoring: Specifies if the statesAttractors file must be stored
 	 */
-	public NetworkCreation(Properties simulationFeatures, HashMap<String, String> outputs, String outputFolder){
+	public NetworkCreation(Properties simulationFeatures, HashMap<String, String> outputs, String outputFolder, boolean statesAttractorsStoring){
 		//Parameters checking
 		if(simulationFeatures == null)
 			throw new NullPointerException("The simulation features must be not null.");
@@ -45,6 +48,7 @@ public class NetworkCreation implements Task {
 		this.simulationFeatures = simulationFeatures;
 		this.outputFolder = outputFolder;
 		this.outputs = outputs;
+		this.statesAttractorsStoring = statesAttractorsStoring;
 	
 	}
 	
@@ -71,6 +75,7 @@ public class NetworkCreation implements Task {
 		String atmFileName = simulationID + "_atm.csv";
 		String attractorsFileName = simulationID + "_attractors.csv";
 		String synthesisFileName = simulationID + "_synthesis.csv";
+		String statesAttractorsFileName = simulationID + "_statesAttractors.csv";
 		//Creates the folder
 		Output.createFolder(this.outputFolder + "/" + networkFolderName);
 
@@ -80,6 +85,10 @@ public class NetworkCreation implements Task {
 		Output.createATMFile(atmManager.getAtm(), this.outputFolder + "/" + networkFolderName + "/" + atmFileName);
 		//Stores the attractors
 		Output.saveAttractorsFile(samplingManager.getAttractorFinder(), this.outputFolder + "/" + networkFolderName + "/" + attractorsFileName);
+		
+		//If required, stores the state-attractors file.
+		if(this.statesAttractorsStoring)
+			Output.saveStatesAttractorsFile(this.outputFolder + "/" + networkFolderName + "/" + statesAttractorsFileName, samplingManager.getAttractorFinder());
 		
 		//Saves the statistics
 		Properties statistics = new Properties();

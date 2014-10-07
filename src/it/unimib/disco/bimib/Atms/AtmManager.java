@@ -13,6 +13,8 @@ package it.unimib.disco.bimib.Atms;
 //System imports
 import java.util.Properties;
 
+
+
 //GRNSim imports
 import it.unimib.disco.bimib.Exceptions.*;
 import it.unimib.disco.bimib.Mutations.MutationManager;
@@ -22,7 +24,25 @@ import it.unimib.disco.bimib.Utility.*;
 public class AtmManager {
 
 	private Atm atm;
-	public AtmManager(){}
+	
+	/**
+	 * AtmManager constructor with atm specified.
+	 * @param atm: a double matrix that represents the atm 
+	 * @param samplingManager: The sampling Manager
+	 * @param mutationManager: The mutation Manager
+	 * @param nodes: Number of nodes of the network.
+	 * @throws MissingFeaturesException
+	 * @throws ParamDefinitionException
+	 */
+	public AtmManager(double[][] atm, SamplingManager samplingManager, MutationManager mutationManager, int nodes) throws MissingFeaturesException, ParamDefinitionException{
+		if(samplingManager == null)
+			throw new MissingFeaturesException("The sampling manager must be not null");
+		if(nodes < 0)
+			throw new ParamDefinitionException("The nodes number must be greater then 0");
+		//Creates the ATM
+		this.atm = new Atm(samplingManager.getAttractorFinder(), mutationManager.getMutation(), atm);
+	}
+	
 	/**
 	 * This is the constructor
 	 * @param simulationFeatures

@@ -22,9 +22,11 @@ import java.util.Properties;
 
 
 
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
+
 
 
 
@@ -42,28 +44,26 @@ import it.unimib.disco.bimib.IO.Output;
 import it.unimib.disco.bimib.Atms.AtmManager;
 import it.unimib.disco.bimib.Mutations.MutationManager;
 
-public class NetworkModificationTask implements Task {
+public class OpenAndMutationTask implements Task {
 
 	private Properties simulationFeatures;
 	private HashMap<String, String> outputs;
 	private String outputFolder;
 	private GraphManager originalNetwork;
+	private double[][] originalAtm;
 	private boolean statesAttractorsStoring;
 	
 	/**
 	 * Generic constructor
+	 * @param listener: thread listener object
 	 * @param simulationFeatures: Properties object with the simulation features
-	 * @param outputs: network-output file matching.
-	 * @param outputFolder: The folder where put the outputs
-	 * @param originalNetworkFile: The original network grnml file (with its path)
-	 * @param statesAttractorsStoring: Specifies if the statesAttractors file must be stored
 	 * @throws NotExistingNodeException 
 	 * @throws IOException 
 	 * @throws SAXException 
 	 * @throws ParserConfigurationException 
 	 * @throws ParamDefinitionException 
 	 */
-	public NetworkModificationTask(Properties simulationFeatures, HashMap<String, String> outputs, String outputFolder, String originalNetworkFile, boolean  statesAttractorsStoring) throws ParamDefinitionException, ParserConfigurationException, SAXException, IOException, NotExistingNodeException{
+	public OpenAndMutationTask(Properties simulationFeatures, HashMap<String, String> outputs, String outputFolder, String inputFolder, String networkName, boolean statesAttractorsStoring) throws ParamDefinitionException, ParserConfigurationException, SAXException, IOException, NotExistingNodeException{
 		//Parameters checking
 		if(simulationFeatures == null)
 			throw new NullPointerException("The simulation features must be not null.");
@@ -75,9 +75,10 @@ public class NetworkModificationTask implements Task {
 		this.simulationFeatures = simulationFeatures;
 		this.outputFolder = outputFolder;
 		this.outputs = outputs;
-		this.originalNetwork = Input.readGRNMLFile(originalNetworkFile);
-		this.statesAttractorsStoring =  statesAttractorsStoring;
-		
+		this.statesAttractorsStoring = statesAttractorsStoring;
+		this.originalNetwork = Input.readGRNMLFile(inputFolder + "/" + networkName + "_network.grnml");
+		//Reads the Atm from the input file
+		this.originalAtm = Input.readAtm(inputFolder + "/" + networkName + "_atm.csv");
 	}
 	
 	@Override
@@ -85,9 +86,6 @@ public class NetworkModificationTask implements Task {
 
 		//Creates the network
 		GraphManager graphManager = this.originalNetwork.copy();
-
-		//Modifies the network
-		graphManager.modify(simulationFeatures);
 
 		//Samples the network in order to find the attractors
 		SamplingManager samplingManager = new SamplingManager(simulationFeatures, graphManager);
@@ -117,15 +115,13 @@ public class NetworkModificationTask implements Task {
 		Output.createATMFile(atmManager.getAtm(), this.outputFolder + "/" + networkFolderName + "/" + atmFileName);
 		//Stores the attractors
 		Output.saveAttractorsFile(samplingManager.getAttractorFinder(), this.outputFolder + "/" + networkFolderName + "/" + attractorsFileName);
-
 		//If required, stores the state-attractors file.
 		if(statesAttractorsStoring)
 			Output.saveStatesAttractorsFile(this.outputFolder + "/" + networkFolderName + "/" + statesAttractorsFileName, samplingManager.getAttractorFinder());
-
 		
 		//Saves the statistics
 		Properties statistics = new Properties();
-		statistics.put(OutputConstants.SIMULATION_ID, simulationID);
+		statistics.put(OutputConstants.SIMULATION_ID, graphManager.hashCode());
 		statistics.put(OutputConstants.CLUSTERING_COEFFICIENT, NetworkStructureStatistics.getClusteringCoefficient(graphManager));
 		statistics.put(OutputConstants.AVERAGE_BIAS, NetworkStructureStatistics.getAverageBiasValue(graphManager));
 		statistics.put(OutputConstants.AVERAGE_PATH_LENGTH, NetworkStructureStatistics.getAveragePath(graphManager));
@@ -138,12 +134,12 @@ public class NetworkModificationTask implements Task {
 		statistics.put(OutputConstants.ATTRACTORS_LENGTH, avgLength/samplingManager.getAttractorFinder().getAttractorsNumber());
 		statistics.put(OutputConstants.TREE_DISTANCE, 0);
 		statistics.put(OutputConstants.NOT_FOUND_ATTRACTORS, 0);
-		
+
 		Output.createSynthesisFile(statistics, this.outputFolder + "/" + networkFolderName + "/" + synthesisFileName);
 
 		//Stores the outputs folder
 		this.outputs.put(simulationID, this.outputFolder + "/" + networkFolderName + "/");
-				
+
 		//Output message
 		System.out.println("Network saved at " + this.outputFolder + "/" + networkFolderName + "/" + networkFileName);
 				

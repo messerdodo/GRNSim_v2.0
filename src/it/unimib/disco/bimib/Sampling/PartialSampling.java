@@ -330,5 +330,21 @@ public class PartialSampling extends BinarySamplingMethod {
 
 	}
 
+	@Override
+	/**
+	 * This method returns the couples state-attractor as an HashMap
+	 */
+	public HashMap<String, String> getStatesAttractorsCouples() {
+		return this.attractors;
+	}
+
+	@Override
+	/**
+	 * This method returns the couples state-position as an HashMap.
+	 */
+	public HashMap<String, Integer> getStatesPositionsCouples() {
+		return this.positions;
+	}
+
 
 }
