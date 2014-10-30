@@ -13,6 +13,8 @@ package it.unimib.disco.bimib.Functions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+
+
 //GRNSim imports
 import it.unimib.disco.bimib.Exceptions.*;
 import it.unimib.disco.bimib.Utility.UtilityRandom;
@@ -230,7 +232,32 @@ public class CanalizedFunction extends BooleanFunction {
 		return newCana;	
 	}
 
+	/**
+	 * This method returns the type of the function as a String
+	 * @return Function type
+	 */
+	public String getType(){
+		return "Canalizing";
+	}
 
+	/**
+	 * This method returns the input used for the canalizing function
+	 * @return the input used for the canalizing function
+	 */
+	public int[] getUsefullInputs(){
+		return this.usefullInputs;
+	}
+	
+	@Override
+	/**
+	 * This method return the function table as a string, string hash map
+	 */
+	public HashMap<String, String> getTable() {
+		HashMap<String, String> funcTable = new HashMap<String, String>();
+		for(String inputs : this.functionTable.keySet())
+			funcTable.put(inputs, this.functionTable.get(inputs) == Boolean.TRUE ? "1" : "0");
+		return funcTable;
+	}
 
 
 }

@@ -23,9 +23,11 @@ import java.util.Properties;
 
 
 
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
+
 
 
 
@@ -50,6 +52,7 @@ public class OpenAndMutationTask implements Task {
 	private HashMap<String, String> outputs;
 	private String outputFolder;
 	private GraphManager originalNetwork;
+	@SuppressWarnings("unused")
 	private double[][] originalAtm;
 	private boolean statesAttractorsStoring;
 	

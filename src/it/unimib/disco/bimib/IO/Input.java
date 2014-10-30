@@ -15,6 +15,10 @@ import it.unimib.disco.bimib.Functions.*;
 import it.unimib.disco.bimib.Utility.SimulationFeaturesConstants;
 
 
+
+
+
+
 //System imports
 import java.util.Properties;
 import java.util.Scanner;
@@ -71,6 +75,7 @@ public class Input {
 	 * @throws InputFormatException : The specified file format is not correct.
 	 * @throws MissedParamException : A parameter has not the corresponding value.
 	 */
+	@SuppressWarnings("resource")
 	public static Properties readTaskFeatures(String fileName) throws FileNotFoundException, InputFormatException, MissedParamException{
 		//Input file not specified
 		if(fileName == null)			
@@ -115,6 +120,7 @@ public class Input {
 	 * @throws MissedParamException: The features are not well formed (each as a key-value couple)
 	 * @throws InputFormatException: File format not correct
 	 */
+	@SuppressWarnings("resource")
 	public static Properties readSimulationFeatures(String fileName) 
 			throws NullPointerException, FileNotFoundException, InputFormatException, MissedParamException{
 		//Input file not specified
@@ -294,6 +300,7 @@ public class Input {
 	 * @throws FileNotFoundException
 	 * @throws InputFormatException
 	 */
+	@SuppressWarnings("resource")
 	public static ArrayList<String[]> readTree(String fileName) 
 			throws NullPointerException, FileNotFoundException, InputFormatException{
 
@@ -322,6 +329,7 @@ public class Input {
 	 * @return The atm read from file.
 	 * @throws IOException 
 	 */
+	@SuppressWarnings("resource")
 	public static double[][] readAtm(String atmFileName) throws IOException{
 		double[][] atm;
 		int n, row = 0;

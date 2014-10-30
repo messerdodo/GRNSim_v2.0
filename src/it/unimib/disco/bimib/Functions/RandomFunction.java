@@ -13,6 +13,7 @@ package it.unimib.disco.bimib.Functions;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
 //GRNSim imports
 import it.unimib.disco.bimib.Exceptions.*;
 import it.unimib.disco.bimib.Utility.UtilityRandom;
@@ -178,5 +179,23 @@ public class RandomFunction extends BooleanFunction {
 		return newRand;	
 	}
 
+	/**
+	 * This method returns the type of the function as a String
+	 * @return Function type
+	 */
+	public String getType(){
+		return (bias == 0.5 ? "Random" : "Random with bias");
+	}
 
+	@Override
+	/**
+	 * This method return the function table as a string, string hash map
+	 */
+	public HashMap<String, String> getTable() {
+		HashMap<String, String> funcTable = new HashMap<String, String>();
+		for(String inputs : this.functionTable.keySet())
+			funcTable.put(inputs, this.functionTable.get(inputs) == Boolean.TRUE ? "1" : "0");
+		return funcTable;
+	}
+	
 }

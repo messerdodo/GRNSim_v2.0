@@ -183,6 +183,11 @@ public class SimulationFeaturesConstants {
 	public static final String YES = "yes";
 	
 	/**
+	 * NO value
+	 */
+	public static final String NO = "no";
+	
+	/**
 	 * Excludes the passed genes as source.
 	 */
 	public static final String EXCLUDES_SOURCE_GENES = "excludes-source-genes";

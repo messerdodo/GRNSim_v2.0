@@ -1,7 +1,7 @@
 package it.unimib.disco.bimib.Utility;
 
 /**
- * This class contains all the constants used in outpus files.
+ * This class contains all the constants used in output files.
  * @author Andrea Paroni (a.paroni@campus.unimib.it)
  * @group BIMIB @ DISCo (Department of Information Technology, Systems and Communication) of Milan University - Bicocca 
  * @year 2014

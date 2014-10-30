@@ -13,6 +13,9 @@ package it.unimib.disco.bimib.Functions;
 
 //System imports
 import java.util.ArrayList;
+
+import java.util.HashMap;
+
 //GRNSim imports
 import it.unimib.disco.bimib.Exceptions.*;
 
@@ -137,6 +140,42 @@ public class AndOrFunction extends BooleanFunction {
 		return newAndOr;	
 	}
 
+	/**
+	 * This method returns the type of the function as a String
+	 * @return Function type
+	 */
+	public String getType(){
+		return (andFunction ? "AND" : "OR");
+	}
 
-
+	@Override
+	/**
+	 * This method return the function table as a string, string hash map
+	 */
+	public HashMap<String, String> getTable() {
+		HashMap<String, String> funcTable = new HashMap<String, String>();
+		String binaryInputs;
+		//Creates the completed function table for the and/or function
+		for(int i = 0; i < Math.pow(2, inputs.size()); i++){
+			binaryInputs = Integer.toBinaryString(i);
+			while(binaryInputs.length() < inputs.size()){
+				binaryInputs = "0" + binaryInputs;
+			}
+			//And function
+			if(this.andFunction){
+				if(i == Math.pow(2, inputs.size()) - 1)
+					funcTable.put(binaryInputs, "1");
+				else
+					funcTable.put(binaryInputs, "0");
+			//Or function
+			}else{
+				if(i != 0)
+					funcTable.put(binaryInputs, "1");
+				else
+					funcTable.put(binaryInputs, "0");
+			}
+		}
+		
+		return funcTable;
+	}
 }

@@ -13,6 +13,8 @@ package it.unimib.disco.bimib.Functions;
 // System imports
 import java.util.ArrayList;
 
+import java.util.HashMap;
+
 // GRNSim imports
 import it.unimib.disco.bimib.Exceptions.*;
 
@@ -71,4 +73,17 @@ public interface Function {
 	 * @throws ParamDefinitionException 
 	 */
 	public Function copy() throws ParamDefinitionException;
+	
+	
+	/**
+	 * This method returns the type of the function as a String
+	 * @return Function type
+	 */
+	public String getType();
+	
+	/**
+	 * This method return the function table.
+	 * @return the function table
+	 */
+	public HashMap<String, String> getTable();
 }

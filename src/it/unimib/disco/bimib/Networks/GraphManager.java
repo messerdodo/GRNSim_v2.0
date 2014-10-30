@@ -298,6 +298,33 @@ public class GraphManager {
 		this.geneRegulatoryNetwork.addFunctions(functions);
 
 	}
+	
+	/**
+	 * This method creates the graph with nodes and edges passed.
+	 * @param nodesName: The array of the nodes names
+	 * @param edges: the edge matrix each row is a couple of connected nodes. 
+	 * @param graphTopology: the graph topology. Use the NetworkTopology enumeration
+	 * @throws ParamDefinitionException 
+	 * @throws NotExistingNodeException 
+	 */
+	public void createGraph(String[] nodesName, int[][] edges, String graphTopology) 
+			throws ParamDefinitionException, NotExistingNodeException{
+		if(nodesName == null)
+			throw new ParamDefinitionException("The nodes name array must be not null");
+		if(edges == null)
+			throw new ParamDefinitionException("The edge set must be not null");
+	
+		//Creates the correct topology graph object
+		if(graphTopology.equals(SimulationFeaturesConstants.RANDOM_TOPOLOGY))
+			this.geneRegulatoryNetwork = new RandomGraph(nodesName, edges);
+		else if(graphTopology.equals(SimulationFeaturesConstants.SCALE_FREE_TOPOLOGY))
+			this.geneRegulatoryNetwork = new ScaleFreeGraph(nodesName, edges);
+		else if(graphTopology.equals(SimulationFeaturesConstants.SMALL_WORLD_TOPOLOGY))
+			this.geneRegulatoryNetwork = new SmallWorldGraph(nodesName, edges);
+		else if(graphTopology.equals(SimulationFeaturesConstants.PARTIALLY_RANDOM_TOPOLOGY))
+			this.geneRegulatoryNetwork = new PartiallyRandomGraph(nodesName, edges); //Da aggiungere il numero di input
+
+	}
 
 	/**
 	 * This method modifies an existing gene regulatory network following the specified features.
