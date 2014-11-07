@@ -370,11 +370,11 @@ public class GraphManager {
 		//Adds the mandatory edges
 		for(int i = 0; i < this.getNodesNumber(); i++){
 			//Checks if the i-th node has at least one connection
-			if(this.geneRegulatoryNetwork.getNodeDegree(i) == 0 && (noSource == null || !noSource.contains(geneRegulatoryNetwork.getNodesNames()[i]))){
+			if(this.geneRegulatoryNetwork.getNodeDegree(i) == 0 && (noSource == null || !noSource.contains(geneRegulatoryNetwork.getNodesNames().get(i)))){
 				//Adds a random connection that respects the noTarget rule.
 				do{
 					targetNode = UtilityRandom.randomUniform(0, this.getNodesNumber());
-				}while(targetNode == i || (noTarget != null && noTarget.contains(geneRegulatoryNetwork.getNodesNames()[targetNode])) || 
+				}while(targetNode == i || (noTarget != null && noTarget.contains(geneRegulatoryNetwork.getNodesNames().get(targetNode))) || 
 						((this.geneRegulatoryNetwork.getNodeIncomingDegree(targetNode) >= fixedInputNumber)  && (fixedInputNumber != -1)));
 				this.geneRegulatoryNetwork.addEdge(i, targetNode);
 			}
@@ -570,6 +570,21 @@ public class GraphManager {
 		if(nodeNumber < 0 || nodeNumber > this.getNodesNumber())
 			throw new ParamDefinitionException("The node number value must be between 0 and " + this.getNodesNumber());
 
+		this.geneRegulatoryNetwork.getFunction(nodeNumber).perpetuallyMutationActivation(knockIn);
+
+	}
+	
+	/**
+	 * This method modify an existing function perpetually.
+	 * @param nodeName: the node name
+	 * @param knockIn: the fixed function value
+	 * @throws ParamDefinitionException 
+	 * @throws NotExistingNodeException 
+	 */
+	public void perpetuallyChangeFunctionValue(String nodeName, boolean knockIn) throws ParamDefinitionException, NotExistingNodeException{
+		if(nodeName == null)
+			throw new ParamDefinitionException("The node name must be not null!");
+		int nodeNumber = this.geneRegulatoryNetwork.getNodeNumber(nodeName);
 		this.geneRegulatoryNetwork.getFunction(nodeNumber).perpetuallyMutationActivation(knockIn);
 
 	}

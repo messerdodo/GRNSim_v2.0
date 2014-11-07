@@ -33,7 +33,7 @@ public abstract class IncidenceMatrixGraph implements GeneRegulatoryNetwork{
 
 	private int[][] incidenceMatrix;
 	private int[] nodes;
-	private String[] nodesName;
+	private ArrayList<String> nodesName;
 	private int nodesNumber;
 
 	private String topology;
@@ -54,9 +54,9 @@ public abstract class IncidenceMatrixGraph implements GeneRegulatoryNetwork{
 		this.nodes = new int[n];
 
 		//Node names initialization: Mnemonic code
-		this.nodesName = new String[n];
+		this.nodesName = new ArrayList<String>(n);
 		for(int i = 0; i < n; i++)
-			this.nodesName[i] = "gene_" + i;
+			this.nodesName.add(i, "gene_" + i);
 
 		//Initializes the genes changing state functions
 		this.genesStateFunctions = new Function[n];
@@ -109,7 +109,7 @@ public abstract class IncidenceMatrixGraph implements GeneRegulatoryNetwork{
 	 * This method returns a list with the names of nodes of the graph
 	 * @return nodes' names
 	 */
-	public String[] getNodesNames(){
+	public ArrayList<String> getNodesNames(){
 		return this.nodesName;
 	}
 
@@ -254,7 +254,7 @@ public abstract class IncidenceMatrixGraph implements GeneRegulatoryNetwork{
 	public void setNodeName(int node, String nodeName) throws NotExistingNodeException{
 		if(node < 0 || node >= nodesNumber)
 			throw new NotExistingNodeException("gene_" + node + " doesn't exist!"); 	
-		this.nodesName[node] = nodeName;
+		this.nodesName.set(node, nodeName);
 	}
 
 	/**
@@ -266,7 +266,7 @@ public abstract class IncidenceMatrixGraph implements GeneRegulatoryNetwork{
 	public String getNodeName(int node) throws NotExistingNodeException{
 		if(node < 0 || node >= nodesNumber)
 			throw new NotExistingNodeException("gene_" + node + " doesn't exist!");
-		return this.nodesName[node];
+		return this.nodesName.get(node);
 	}
 
 	/**
@@ -276,12 +276,7 @@ public abstract class IncidenceMatrixGraph implements GeneRegulatoryNetwork{
 	 * @return The number of the node in the graph.
 	 */
 	public int getNodeNumber(String nodeName){
-
-		for(int i = 0; i < this.nodesName.length; i++)
-			if(this.nodesName[i].equals(nodeName))
-				return i;
-
-		return -1;
+		return this.nodesName.indexOf(nodeName);
 	}
 	
 	/**
@@ -499,7 +494,7 @@ public abstract class IncidenceMatrixGraph implements GeneRegulatoryNetwork{
 		String grnml = "<graph topology = \""+ this.topology +"\" nodes_number = \"" + this.nodesNumber + "\">\n";
 		//Nodes
 		for(int i = 0; i < nodes.length; i++){
-			grnml += "\t\t<node id = \"" + nodes[i] +"\" name = \"" + nodesName[i] + "\" >\n";
+			grnml += "\t\t<node id = \"" + nodes[i] +"\" name = \"" + nodesName.get(i) + "\" >\n";
 			//Function
 			grnml += genesStateFunctions[i].toGRNML();
 			grnml += "\t\t</node>\n";
@@ -528,7 +523,7 @@ public abstract class IncidenceMatrixGraph implements GeneRegulatoryNetwork{
 		newGraph.incidenceMatrix = new int[this.nodesNumber][this.nodesNumber];
 		newGraph.genesStateFunctions = new Function[this.nodesNumber];
 		newGraph.nodes = new int[this.nodesNumber];
-		newGraph.nodesName = new String[this.nodesNumber];
+		newGraph.nodesName = new ArrayList<String>(this.nodesNumber);
 
 		for(int i = 0; i < this.nodesNumber; i++){
 			if(this.genesStateFunctions[i] == null)
@@ -536,7 +531,7 @@ public abstract class IncidenceMatrixGraph implements GeneRegulatoryNetwork{
 			else
 				newGraph.genesStateFunctions[i] = this.genesStateFunctions[i].copy();
 			newGraph.nodes[i] = this.nodes[i];
-			newGraph.nodesName[i] = this.nodesName[i];
+			newGraph.nodesName.add(i, this.nodesName.get(i)); 
 			for(int j = 0; j < this.nodesNumber; j++)
 				newGraph.incidenceMatrix[i][j] = this.incidenceMatrix[i][j];
 		}
@@ -554,13 +549,11 @@ public abstract class IncidenceMatrixGraph implements GeneRegulatoryNetwork{
 		int newNodesNumber = this.nodesNumber + nodesNumber;
 		int[][] newIncidenceMatrix = new int[newNodesNumber][newNodesNumber];
 		int[] newNodes = new int[newNodesNumber];
-		String[] newNodesNames = new String[newNodesNumber];
 		Function[] newGenesStateFunctions = new Function[newNodesNumber];
 		
 		//Copies the old values in the new incident matrix
 		for(int i = 0; i < this.nodesNumber; i++){
 			newNodes[i] = this.nodes[i];
-			newNodesNames[i] = this.nodesName[i];
 			newGenesStateFunctions[i] = this.genesStateFunctions[i];
 			for(int j = 0; j < this.nodesNumber; j++){
 				newIncidenceMatrix[i][j] = this.incidenceMatrix[i][j];
@@ -576,14 +569,13 @@ public abstract class IncidenceMatrixGraph implements GeneRegulatoryNetwork{
 		
 		for(int i = this.nodesNumber; i < newNodesNumber; i++){
 			newNodes[i] = i;
-			newNodesNames[i] = "gene_" + i;
+			this.nodesName.add(i, "gene_" + i);
 		}
 		
 		//Sets the new values
 		this.nodesNumber = newNodesNumber;
 		this.incidenceMatrix = newIncidenceMatrix;
 		this.nodes = newNodes;
-		this.nodesName = newNodesNames;
 		this.genesStateFunctions = newGenesStateFunctions;
 		
 	}

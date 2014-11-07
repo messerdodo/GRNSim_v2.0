@@ -30,7 +30,7 @@ public interface GeneRegulatoryNetwork {
 	 * This method returns a list with the nodes of the graph names
 	 * @return [node]
 	 */
-	public String[] getNodesNames();
+	public ArrayList<String> getNodesNames();
 
 	/**
 	 * This method returns a list with the edges of the graph. 
