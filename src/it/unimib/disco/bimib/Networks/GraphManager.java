@@ -370,16 +370,15 @@ public class GraphManager {
 		//Adds the mandatory edges
 		for(int i = 0; i < this.getNodesNumber(); i++){
 			//Checks if the i-th node has at least one connection
-			if(this.geneRegulatoryNetwork.getNodeDegree(i) == 0 && (noSource == null || !noSource.contains(String.valueOf(i)))){
+			if(this.geneRegulatoryNetwork.getNodeDegree(i) == 0 && (noSource == null || !noSource.contains(geneRegulatoryNetwork.getNodesNames()[i]))){
 				//Adds a random connection that respects the noTarget rule.
 				do{
 					targetNode = UtilityRandom.randomUniform(0, this.getNodesNumber());
-				}while(targetNode == i || (noTarget != null && noTarget.contains(String.valueOf(targetNode))) || 
+				}while(targetNode == i || (noTarget != null && noTarget.contains(geneRegulatoryNetwork.getNodesNames()[targetNode])) || 
 						((this.geneRegulatoryNetwork.getNodeIncomingDegree(targetNode) >= fixedInputNumber)  && (fixedInputNumber != -1)));
 				this.geneRegulatoryNetwork.addEdge(i, targetNode);
 			}
 		}
-		
 		
 		//Edges already added
 		int insertedEdges = this.geneRegulatoryNetwork.getEdges().size();
