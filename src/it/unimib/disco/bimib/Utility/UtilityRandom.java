@@ -217,6 +217,39 @@ public class UtilityRandom {
 	}
 	
 	/**
+	 * This method returns a integer subset on the integer set {0, ... ,elementsNumber - 1}
+	 * The subset dimension is specified
+	 * @param elements: the original set
+	 * @param size: the subset size
+	 * @param exclude: list of elements to exclude from the choice.
+	 * @return integer subset.
+	 * @throws ParamDefinitionException 
+	 */
+	public static ArrayList<Integer> randomSubset(int elementsNumber, int size, ArrayList<Integer> exclude) throws ParamDefinitionException{
+
+		//Param checking
+		if(elementsNumber < 0)
+			throw new ParamDefinitionException("The original set must be not null");
+		if(size > elementsNumber)
+			throw new ParamDefinitionException("The subset size must be smaller than the original set size.");
+		if(size < 0)
+			return null;
+
+		int choose;
+		ArrayList<Integer> subset = new ArrayList<Integer>();
+		//Creates the random subset
+		for(int i = 0; i < size; i++){
+			do{
+				choose = UtilityRandom.randomUniform(0, elementsNumber);
+			}while(subset.contains(choose) || exclude.contains(choose));
+			subset.add(choose);	
+		}
+		//Sorts the subset
+		Collections.sort(subset);
+		return subset;
+	}
+	
+	/**
 	 * This method returns a permutation of the passed array.
 	 * @param array: An object array
 	 * @return  permutation of the passed array.

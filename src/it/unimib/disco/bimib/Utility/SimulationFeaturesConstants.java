@@ -347,4 +347,29 @@ public class SimulationFeaturesConstants {
 	 * This key is used in order to specify the threshold for the matching
 	 */
 	public static final String THRESHOLD = "threshold";
+	
+	/**
+	 * This key is used in order to specify the names of the specific nodes to perturb
+	 */
+	public static final String SPECIFIC_PERTURB_NODES = "specific-perturb-nodes";
+	
+	/**
+	 * This key is used in order to specify the names of the specific nodes to knock-in
+	 */
+	public static final String SPECIFIC_KNOCK_IN_NODES = "specific-knock-in-nodes";
+	
+	/**
+	 * This key is used in order to specify the names of the specific nodes to knock-out
+	 */
+	public static final String SPECIFIC_KNOCK_OUT_NODES = "specific-knock-out-nodes";
+	
+	/**
+	 * This key is used in order to specify the names of the nodes to permanently knock-in
+	 */
+	public static final String PERMANENTLY_KNOCK_IN_NODES = "permanently-knock-in-nodes";
+	
+	/**
+	 * This key is used in order to specify the names of the nodes to permanently knock-out
+	 */
+	public static final String PERMANENTLY_KNOCK_OUT_NODES = "permanently-knock-out-nodes";
 }

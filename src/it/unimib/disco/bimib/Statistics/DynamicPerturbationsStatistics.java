@@ -30,6 +30,11 @@ public class DynamicPerturbationsStatistics {
 			this.sensitivity[i] = 0;
 	}
 	
+	
+	
+	
+	
+	
 	/**
 	 * This method computes the avalanches and the sensitivity contribution
 	 * performing all the possible state shifts in the two passed attractors. 
@@ -141,6 +146,24 @@ public class DynamicPerturbationsStatistics {
 	 */
 	public int[]  getSensitivity(){
 		return this.sensitivity;
+	}
+	
+	/**
+	 * This method returns the sensitivity distribution 
+	 * @return the sensitivity distribution
+	 */
+	public HashMap<Integer, Integer> getSensitivityDistribuction(){
+		HashMap<Integer, Integer> distribution = new HashMap<Integer, Integer>();
+		//Populates the distribution structure
+		for(Integer value : this.sensitivity)
+			//There is already an entry for the current value
+			if(distribution.containsKey(value))
+				distribution.replace(value,distribution.get(value) + 1);
+			else
+				//First time for the sensitivity 'value'
+				distribution.put(value, 1);
+		
+		return distribution;
 	}
 	
 	
