@@ -64,6 +64,7 @@ public class AtmManager {
 
 		double mutationRate;
 		int perturbExperiments;
+		boolean avalanchesSensitivityDistComputation;
 
 		if(simulationFeatures == null)
 			throw new MissingFeaturesException("Features must be not null");
@@ -73,6 +74,8 @@ public class AtmManager {
 			throw new MissingFeaturesException("Features must contain the mutation rate value");
 		if(nodes < 0)
 			throw new ParamDefinitionException("The nodes number must be greater then 0");
+		if(!simulationFeatures.containsKey(SimulationFeaturesConstants.COMPUTE_AVALANCHES_AND_SENSITIVITY))
+			throw new MissingFeaturesException(SimulationFeaturesConstants.COMPUTE_AVALANCHES_AND_SENSITIVITY + " feature key must be specified.");
 
 		//Checks the mutation rate parameter existence.
 		if(!simulationFeatures.containsKey(SimulationFeaturesConstants.RATIO_OF_STATES_TO_PERTURB))
@@ -85,8 +88,12 @@ public class AtmManager {
 		else if(mutationRate > 1)
 			mutationRate = 1;
 
+		avalanchesSensitivityDistComputation = simulationFeatures.getProperty(
+				SimulationFeaturesConstants.COMPUTE_AVALANCHES_AND_SENSITIVITY).equals(SimulationFeaturesConstants.YES);
+		
+		
 		//Create a new ATM object
-		this.atm = new Atm(samplingManager.getAttractorFinder(), mutationManager.getMutation());
+		this.atm = new Atm(samplingManager.getAttractorFinder(), mutationManager.getMutation(), avalanchesSensitivityDistComputation, nodes);
 
 		//Gets the perturb experiments
 		if(!simulationFeatures.containsKey(SimulationFeaturesConstants.HOW_MANY_PERTURB_EXP)) 

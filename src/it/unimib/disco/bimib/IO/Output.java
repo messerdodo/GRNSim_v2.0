@@ -11,14 +11,22 @@
 package it.unimib.disco.bimib.IO;
 
 //System imports
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+
+
+
+
+
 
 
 
@@ -387,6 +395,78 @@ public class Output {
 		writer.close();
 	}
 	
+	/**
+	 * This method saves the avalanches distribution in a csv file. 
+	 * The first line of the file is the header.
+	 * @param fileName: The name of the file
+	 * @param dist: avalanches distribution hash-map
+	 * @throws IOException
+	 */
+	public static void saveAvalachesDistribution(String fileName, HashMap<Integer, Integer> distribution) throws IOException{
+		//Checks the param values
+		if(fileName == null)
+			throw new NullPointerException("The file name must not be null for the states-attractors file");
+		if(distribution == null)
+			throw new NullPointerException("The avalanches distribution object must be not null for saving the file");
+		
+		//Defines the writer streams
+		FileWriter writer = new FileWriter(fileName);
+		PrintWriter printer = new PrintWriter(writer);
+		
+		//Header
+		printer.println("Avalanche dimension,Frequency");
+		printer.flush();
+		
+		SortedMap<Integer, Integer> sortedDistribution = new TreeMap<Integer, Integer>(distribution);
+		
+		//Writes the frequency for each avalanche dimension
+		for(Integer avalancheDim : sortedDistribution.keySet()){
+			printer.println(avalancheDim + "," + sortedDistribution.get(avalancheDim) );
+			printer.flush();
+		}
+		
+		//Closes the stream
+		printer.close();
+		writer.close();
+	}
+	
+	
+	/**
+	 * This method saves the sensitivity in a csv file. 
+	 * The first line of the file is the header.
+	 * @param fileName: The name of the file
+	 * @param dist: avalanches distribution hash-map
+	 * @throws Exception 
+	 */
+	public static void saveSensitivity(String fileName, ArrayList<String> genesNames, int[] sensitivity) throws Exception{
+		//Checks the param values
+		if(fileName == null)
+			throw new NullPointerException("The file name must not be null for the states-attractors file");
+		if(genesNames == null)
+			throw new NullPointerException("The names of the genes must be not null for saving the file");
+		if(sensitivity == null)
+			throw new NullPointerException("The sensitivity must be not null for saving the file");
+		if(genesNames.size() != sensitivity.length)
+			throw new Exception("The sensitivity and the genes names arrays must be the same dimension.");
+		
+		//Defines the writer streams
+		FileWriter writer = new FileWriter(fileName);
+		PrintWriter printer = new PrintWriter(writer);
+		
+		//Header
+		printer.println("Gene name,Sensitivity");
+		printer.flush();
+		
+		//Writes the sensitivity for each gene
+		for(int i = 0; i < genesNames.size(); i++){
+			printer.println(genesNames.get(i) + "," + sensitivity[i]);
+			printer.flush();
+		}
+		
+		//Closes the stream
+		printer.close();
+		writer.close();
+	}
 	
 	/**
 	 * This method returns the network statistics in the correct format for the visualization.

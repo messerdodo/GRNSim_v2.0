@@ -89,7 +89,9 @@ public class NetworkCreation implements Task {
 		//If required, stores the state-attractors file.
 		if(this.statesAttractorsStoring)
 			Output.saveStatesAttractorsFile(this.outputFolder + "/" + networkFolderName + "/" + statesAttractorsFileName, samplingManager.getAttractorFinder());
-		
+		Output.saveAvalachesDistribution(this.outputFolder + "/" + networkFolderName + "/" + simulationID + "_avalanches.csv", atmManager.getAtm().getDynamicPerturbationsStatistics().getAvalanchesDistribution());
+		Output.saveSensitivity(this.outputFolder + "/" + networkFolderName + "/" + simulationID + "_sensitivity.csv",
+				graphManager.getGraph().getNodesNames(), atmManager.getAtm().getDynamicPerturbationsStatistics().getSensitivity());
 		//Saves the statistics
 		Properties statistics = new Properties();
 		statistics.put(OutputConstants.SIMULATION_ID, simulationID);

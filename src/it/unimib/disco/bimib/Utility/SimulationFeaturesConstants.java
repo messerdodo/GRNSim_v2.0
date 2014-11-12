@@ -313,6 +313,12 @@ public class SimulationFeaturesConstants {
 	public static final String KNOCKOUT_NODES = "knockOut-nodes";
 	
 	/**
+	 * This key is used in order to specify if the computation of the avalanches and sensitivity 
+	 * distribution is required.
+	 */
+	public static final String COMPUTE_AVALANCHES_AND_SENSITIVITY = "avalanches-sensitivity-computation";
+	
+	/**
 	 * Number of matching network required key.
 	 */
 	public static final String MATCHING_NETWORKS = "matching-networks";

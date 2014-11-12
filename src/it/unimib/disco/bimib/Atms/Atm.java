@@ -12,10 +12,12 @@ package it.unimib.disco.bimib.Atms;
 
 //System imports
 import java.util.ArrayList;
+
 //GRNSim imports
 import it.unimib.disco.bimib.Exceptions.*;
 import it.unimib.disco.bimib.Mutations.Mutation;
 import it.unimib.disco.bimib.Sampling.AttractorsFinder;
+import it.unimib.disco.bimib.Statistics.DynamicPerturbationsStatistics;
 import it.unimib.disco.bimib.Utility.UtilityRandom;
 
 
@@ -24,6 +26,8 @@ public class Atm {
 	//References to attractor's interface and mutation's interface
 	private AttractorsFinder attractorsFinder;
 	private Mutation mutation;
+	private boolean dynamicPerturbsComputation;
+	private DynamicPerturbationsStatistics dynamicPerturbationsStatistics;
 
 	//Initializes the atm
 	private double[][] atm;
@@ -34,13 +38,15 @@ public class Atm {
 	/**
 	 * This is the constructor where there is initialized the attractor's interface
 	 * and the call for the main method
-	 * @param attractorsFinder
-	 * @param mutation 
+	 * @param attractorsFinder: the attractor finder object
+	 * @param mutation: The mutation object as initialized for the task.
+	 * @param dynamicPerturbsComputation: boolean value to specify if compute the avalanches and the sensitivity tasks. 
+	 * @param nodes: number of nodes if the network
 	 * @throws NotExistingAttractorsException 
 	 * @throws ParamDefinitionException 
 	 * @throws Exception 
 	 */	
-	public Atm(AttractorsFinder attractorsFinder, Mutation mutation){
+	public Atm(AttractorsFinder attractorsFinder, Mutation mutation, boolean dynamicPerturbsComputation, int nodes){
 		//Parameters checking
 		if(attractorsFinder == null)
 			throw new NullPointerException("Attractor finder object must be not null");
@@ -49,6 +55,24 @@ public class Atm {
 
 		this.attractorsFinder = attractorsFinder;
 		this.mutation = mutation;
+		this.dynamicPerturbsComputation = dynamicPerturbsComputation;
+		if(this.dynamicPerturbsComputation)
+			this.dynamicPerturbationsStatistics = new DynamicPerturbationsStatistics(nodes);
+		else
+			this.dynamicPerturbationsStatistics = null;
+	}
+	
+	/**
+	 * This is the constructor where there is initialized the attractor's interface
+	 * and the call for the main method
+	 * @param attractorsFinder: the attractor finder object
+	 * @param mutation: The mutation object as initialized for the task.
+	 * @throws NotExistingAttractorsException 
+	 * @throws ParamDefinitionException 
+	 * @throws Exception 
+	 */	
+	public Atm(AttractorsFinder attractorsFinder, Mutation mutation){
+		this(attractorsFinder, mutation, false, -1);
 	}
 
 	/**
@@ -118,6 +142,13 @@ public class Atm {
 						newState = this.mutation.doMutation(state);
 						//Gets the new state's attractor
 						attractorNewState = attractorsFinder.getAttractor(newState);
+						
+						//Computes the avalanches and the sensitivity if required.
+						if(this.dynamicPerturbsComputation){
+							dynamicPerturbationsStatistics.avalanchesAndSensitivityComputation(statesInAttractor, 
+									this.attractorsFinder.getStatesInAttractor(attractorNewState));
+						}
+						
 						if(attractorNewState != null){
 					
 							//Verifies if the attractor has already been discovered.
@@ -178,8 +209,6 @@ public class Atm {
 		}
 
 		//Initializes the new Atm
-		//this.atm = new double[numbersOfNewAttractors][numbersOfNewAttractors];
-		//newAtm = this.atm;
 		this.atm = newAtm;
 
 	}
@@ -309,4 +338,9 @@ public class Atm {
 			}
 		}
 	}
+	
+	public DynamicPerturbationsStatistics getDynamicPerturbationsStatistics(){
+		return this.dynamicPerturbationsStatistics;
+	}
+	
 }

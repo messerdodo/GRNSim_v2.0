@@ -4,11 +4,6 @@ package it.unimib.disco.bimib.Statistics;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-//import java.util.ArrayList;
-//import java.util.HashMap;
-
-//GRNSim imports
-//import it.unimib.disco.bimib.Mutations.*;
 
 public class DynamicPerturbationsStatistics {
 	
@@ -29,11 +24,7 @@ public class DynamicPerturbationsStatistics {
 		for(int i = 0; i < this.nodes; i++)
 			this.sensitivity[i] = 0;
 	}
-	
-	
-	
-	
-	
+		
 	
 	/**
 	 * This method computes the avalanches and the sensitivity contribution
@@ -122,10 +113,17 @@ public class DynamicPerturbationsStatistics {
 	}
 	
 	/**
+	 * This method returns the avalanches dimensions array.
+	 */
+	public ArrayList<Integer> getAvalanches(){
+		return this.avalanches;
+	}
+	
+	/**
 	 * This method returns the avalanche distribution
 	 * @return avalanche distribution
 	 */
-	public HashMap<Integer, Integer>  getAvalanche(){
+	public HashMap<Integer, Integer>  getAvalanchesDistribution(){
 		
 		HashMap<Integer, Integer> distribution = new HashMap<Integer, Integer>();
 		
