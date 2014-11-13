@@ -70,8 +70,6 @@ public class AtmManager {
 			throw new MissingFeaturesException("Features must be not null");
 		if(samplingManager == null)
 			throw new MissingFeaturesException("The sampling manager must be not null");
-		if(!simulationFeatures.containsKey(SimulationFeaturesConstants.RATIO_OF_STATES_TO_PERTURB)) 
-			throw new MissingFeaturesException("Features must contain the mutation rate value");
 		if(nodes < 0)
 			throw new ParamDefinitionException("The nodes number must be greater then 0");
 		if(!simulationFeatures.containsKey(SimulationFeaturesConstants.COMPUTE_AVALANCHES_AND_SENSITIVITY))
