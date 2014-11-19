@@ -57,7 +57,7 @@ public class Output {
 	public Output() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	/**
 	 * This method creates the specified folder.
 	 * @param path: The path followed by the new folder name
@@ -195,10 +195,10 @@ public class Output {
 			throw new NullPointerException("The file name must not be null");
 		if(atm == null)
 			throw new NullPointerException("The ATM must not be null");
-		
+
 		//Gets the ATM in tsv format
 		String atmString = atm.getCsvAtm();
-		
+
 		//Defines the writer streams
 		FileWriter writer = new FileWriter(fileName);
 		PrintWriter printer = new PrintWriter(writer);
@@ -210,7 +210,7 @@ public class Output {
 		printer.close();
 		writer.close();
 	}
-	
+
 	/**
 	 * This method saves the states of the attractors in a csv file.
 	 * Each line corresponds to an attractor. Each column corresponds to a state of the i-th attractor.
@@ -227,7 +227,7 @@ public class Output {
 			throw new NullPointerException("The file name must not be null");
 		if(attractorFinder == null)
 			throw new NullPointerException("The attractor finder must not be null");
-		
+
 		//Defines the writer streams
 		FileWriter writer = new FileWriter(fileName);
 		PrintWriter printer = new PrintWriter(writer);
@@ -241,11 +241,11 @@ public class Output {
 			printer.println("");
 			printer.flush();
 		}
-		
+
 		printer.close();
 		writer.close();	
 	}
-	
+
 	/**
 	 * This method saves the synthesis file
 	 * @param results: a property object with all the statistics for the network
@@ -253,13 +253,13 @@ public class Output {
 	 * @throws Exception: This exception is thrown if the property object does not contain all the required statistics.
 	 */
 	public static void createSynthesisFile(Properties results, String fileName) throws Exception{
-	
+
 		//Checks the param values
 		if(fileName == null)
 			throw new NullPointerException("The file name must not be null");
 		if(results == null)
 			throw new NullPointerException("The StoredResults object must not be null");
-		
+
 		//Network ID
 		if(!results.containsKey(OutputConstants.SIMULATION_ID))
 			throw new Exception(OutputConstants.SIMULATION_ID + " key must be in the results object");
@@ -288,19 +288,19 @@ public class Output {
 		//Defines the writer streams
 		FileWriter writer = new FileWriter(fileName);
 		PrintWriter printer = new PrintWriter(writer);	
-		
+
 		//Writes the simulation id
 		printer.print(results.get(OutputConstants.SIMULATION_ID) + ",");
 		printer.flush();
-		
+
 		//Writes the simulation id
 		printer.print(results.get(OutputConstants.CLUSTERING_COEFFICIENT) + ",");
 		printer.flush();
-		
+
 		//Writes the simulation id
 		printer.print(results.get(OutputConstants.AVERAGE_BIAS) + ",");
 		printer.flush();
-		
+
 		//Writes the average path length
 		printer.print(results.get(OutputConstants.AVERAGE_PATH_LENGTH) + ",");
 		printer.flush();
@@ -312,19 +312,19 @@ public class Output {
 		//Writes the number of attractors
 		printer.print(results.get(OutputConstants.ATTRACTORS_NUMBER) + ",");
 		printer.flush();
-				
+
 		//Writes the attractors average length
 		printer.print(results.get(OutputConstants.ATTRACTORS_LENGTH) + ",");
 		printer.flush();	
-		
+
 		//Writes the number of not found attractors
 		printer.print(results.get(OutputConstants.NOT_FOUND_ATTRACTORS));
 		printer.flush();	
-		
+
 		printer.close();
 		writer.close();
 	}
-	
+
 	/**
 	 * This method creates the thresholds and distance file.
 	 * It is used only when there's a tree matching (completely o partial) task
@@ -339,7 +339,7 @@ public class Output {
 			throw new NullPointerException("The file name must not be null for the thresholds file creation");
 		if(thresholds == null)
 			throw new NullPointerException("The thresholds array must be not null.");
-		
+
 		//Defines the writer streams
 		FileWriter writer = new FileWriter(fileName);
 		PrintWriter printer = new PrintWriter(writer);	
@@ -350,11 +350,11 @@ public class Output {
 		//Writes the tree distance
 		printer.print("Tree distance\t" + distance);
 		printer.flush();
-		
+
 		printer.close();
 		writer.close();
 	}
-	
+
 	/**
 	 * This method saves the tuple (state, attractor, position) in a csv file.
 	 * The first row of the file specifies the type of the attractor finder used in the simulation.
@@ -368,18 +368,18 @@ public class Output {
 			throw new NullPointerException("The file name must not be null for the states-attractors file");
 		if(finder == null)
 			throw new NullPointerException("The AttracorsFinder object must be not null for the states-attractors file");
-		
+
 		//Defines the writer streams
 		FileWriter writer = new FileWriter(fileName);
 		PrintWriter printer = new PrintWriter(writer);
-		
+
 		//Attractor finder type.
 		if(finder instanceof BruteForceSampling)
 			printer.println(SimulationFeaturesConstants.BRUTE_FORCE);
 		else
 			printer.println(SimulationFeaturesConstants.PARTIAL_SAMPLING);
 		printer.flush();
-		
+
 		HashMap<String, String> statesAttractors = finder.getStatesAttractorsCouples();
 		HashMap<String, Integer> statesPositions = finder.getStatesPositionsCouples();
 		//Writes the tuple as state,attractor,position
@@ -389,12 +389,12 @@ public class Output {
 			printer.println(statesPositions.get(state));
 			printer.flush();
 		}
-		
+
 		//Closes the stream
 		printer.close();
 		writer.close();
 	}
-	
+
 	/**
 	 * This method saves the avalanches distribution in a csv file. 
 	 * The first line of the file is the header.
@@ -405,32 +405,32 @@ public class Output {
 	public static void saveAvalachesDistribution(String fileName, HashMap<Integer, Integer> distribution) throws IOException{
 		//Checks the param values
 		if(fileName == null)
-			throw new NullPointerException("The file name must not be null for the states-attractors file");
+			throw new NullPointerException("The file name must not be null for the avalanches distribution file");
 		if(distribution == null)
 			throw new NullPointerException("The avalanches distribution object must be not null for saving the file");
-		
+
 		//Defines the writer streams
 		FileWriter writer = new FileWriter(fileName);
 		PrintWriter printer = new PrintWriter(writer);
-		
+
 		//Header
 		printer.println("Avalanche dimension,Frequency");
 		printer.flush();
-		
+
 		SortedMap<Integer, Integer> sortedDistribution = new TreeMap<Integer, Integer>(distribution);
-		
+
 		//Writes the frequency for each avalanche dimension
 		for(Integer avalancheDim : sortedDistribution.keySet()){
 			printer.println(avalancheDim + "," + sortedDistribution.get(avalancheDim) );
 			printer.flush();
 		}
-		
+
 		//Closes the stream
 		printer.close();
 		writer.close();
 	}
-	
-	
+
+
 	/**
 	 * This method saves the sensitivity in a csv file. 
 	 * The first line of the file is the header.
@@ -441,33 +441,81 @@ public class Output {
 	public static void saveSensitivity(String fileName, ArrayList<String> genesNames, int[] sensitivity) throws Exception{
 		//Checks the param values
 		if(fileName == null)
-			throw new NullPointerException("The file name must not be null for the states-attractors file");
+			throw new NullPointerException("The file name must not be null for the sensitivity file");
 		if(genesNames == null)
 			throw new NullPointerException("The names of the genes must be not null for saving the file");
 		if(sensitivity == null)
 			throw new NullPointerException("The sensitivity must be not null for saving the file");
 		if(genesNames.size() != sensitivity.length)
 			throw new Exception("The sensitivity and the genes names arrays must be the same dimension.");
-		
+
 		//Defines the writer streams
 		FileWriter writer = new FileWriter(fileName);
 		PrintWriter printer = new PrintWriter(writer);
-		
+
 		//Header
 		printer.println("Gene name,Sensitivity");
 		printer.flush();
-		
+
 		//Writes the sensitivity for each gene
 		for(int i = 0; i < genesNames.size(); i++){
 			printer.println(genesNames.get(i) + "," + sensitivity[i]);
 			printer.flush();
 		}
-		
+
 		//Closes the stream
 		printer.close();
 		writer.close();
 	}
-	
+
+	/**
+	 * This method saves the attractors lengths in a CSV file. 
+	 * @param fileName: the file name
+	 * @param lengths: The integer array list object with the lengths
+	 * @throws IOException
+	 */
+	public static void saveAttractorsLengths(String fileName, ArrayList<Integer> lengths) throws IOException{
+		//Checks the param values
+		if(fileName == null)
+			throw new NullPointerException("The file name must not be null for the attractors lengths file.");
+		if(lengths == null)
+			throw new NullPointerException("The lengths object must be not null for the attractors lengths file.");
+		//Defines the writer streams
+		FileWriter writer = new FileWriter(fileName);
+		PrintWriter printer = new PrintWriter(writer);
+		for(Integer observation : lengths){
+			printer.print(observation + ",");
+			printer.flush();
+		}
+		//Closes the stream
+		printer.close();
+		writer.close();
+	}
+
+	/**
+	 * This method saves the basin of attraction dimensions in a CSV file.
+	 * @param fileName: the name of the file
+	 * @param dimensions: The integer array with the basin of attraction dimensions
+	 * @throws IOException
+	 */
+	public static void saveBasinOfAttractionFile(String fileName, ArrayList<Integer> dimensions) throws IOException{
+		//Checks the param values
+		if(fileName == null)
+			throw new NullPointerException("The file name must not be null for the basin of attraction dimension file.");
+		if(dimensions == null)
+			throw new NullPointerException("The dimensions object must be not null for the basin of attraction dimensions file.");
+		//Defines the writer streams
+		FileWriter writer = new FileWriter(fileName);
+		PrintWriter printer = new PrintWriter(writer);
+		for(Integer observation : dimensions){
+			printer.print(observation + ",");
+			printer.flush();
+		}
+		//Closes the stream
+		printer.close();
+		writer.close();
+	}
+
 	/**
 	 * This method returns the network statistics in the correct format for the visualization.
 	 * The object matrix has 5 rows, one for each network statistic: Average network bias value, 
@@ -503,7 +551,7 @@ public class Output {
 		return networkStatistics;
 
 	}*/
-	
+
 	/**
 	 * This method allows to save all the statistics
 	 * @param fileName
@@ -585,7 +633,7 @@ public class Output {
 				printer.flush();
 			}
 		}
-		
+
 		if(unmatchingSimulations != null){
 			printer.write("\n*********      Unmatching networks      *********\n");
 			printer.flush();
@@ -715,8 +763,8 @@ public class Output {
 		printer.close();
 
 	}*/
-	
-	
+
+
 	/**
 	 * This method allows to save all the statistics
 	 * @param fileName
@@ -745,7 +793,7 @@ public class Output {
 
 		printer.write("Date: " + (new Date()).toString() + "\n\n");
 		printer.flush();
-		
+
 		for(String experiment : mutations.keySet()){
 			printer.write("Experiment: " + experiment + "\n\n");
 			printer.flush();
@@ -774,16 +822,16 @@ public class Output {
     		}
     		printer.write("\n\n\n");
     		printer.flush();
-    		
+
 		}
-		
+
 		printer.close();
 		writer.close();
 	}
-	*/
-	
-	
-	
+	 */
+
+
+
 	/**
 	 * This method saves the ATM in TSV format
 	 * @param atm: The ATM to be saved
@@ -803,7 +851,7 @@ public class Output {
 		//Defines the writer streams
 		FileWriter writer = new FileWriter(fileName);
 		PrintWriter printer = new PrintWriter(writer);
-		
+
 		for(String simulationId : results.getSimulationIds()){
 			//Gets the specific simulation 
 			SimulationResult result = results.getStoredSimulation(simulationId);
@@ -834,15 +882,15 @@ public class Output {
 			//Writes the number of attractors not found
 			printer.println(result.getSamplingManager().getAttractorFinder().getAttractorsNotFound());
 			printer.flush();
-			
+
 		}
-		
+
 		printer.close();
 		writer.close();
-		
-		
+
+
 	}*/
-	
+
 	/**
 	 * This method saves the tree distances in a file
 	 * @throws IOException 

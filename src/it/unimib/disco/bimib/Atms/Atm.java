@@ -13,11 +13,13 @@ package it.unimib.disco.bimib.Atms;
 //System imports
 import java.util.ArrayList;
 
+
 //GRNSim imports
 import it.unimib.disco.bimib.Exceptions.*;
 import it.unimib.disco.bimib.Mutations.Mutation;
 import it.unimib.disco.bimib.Sampling.AttractorsFinder;
 import it.unimib.disco.bimib.Statistics.DynamicPerturbationsStatistics;
+import it.unimib.disco.bimib.Utility.SCCTarjan;
 import it.unimib.disco.bimib.Utility.UtilityRandom;
 
 
@@ -61,7 +63,7 @@ public class Atm {
 		else
 			this.dynamicPerturbationsStatistics = null;
 	}
-	
+
 	/**
 	 * This is the constructor where there is initialized the attractor's interface
 	 * and the call for the main method
@@ -96,7 +98,7 @@ public class Atm {
 		this.normalize();
 
 	}
-	
+
 	public void createAtm(Object[] attractors, int perturbExperiments, double perturbStatesRatio) 
 			throws MissingFeaturesException, ParamDefinitionException, NotExistingAttractorsException, 
 			NotExistingNodeException, InputTypeException, AttractorNotFoundException {
@@ -126,58 +128,58 @@ public class Atm {
 
 		//Calculates the ATM entries.
 		int index;
-		
+
 		for(int a = 0; a < numberOfAttractors; a++){
-		
-				//Gets a permutation of the states in the selected attractor
-				statesInAttractor = UtilityRandom.randomPermutation(
-						this.attractorsFinder.getStatesInAttractor(attractorVet.get(a)));
-				index = 0;
-				Object state;
-				do{
-					state = statesInAttractor[index];
-					//Perform the perturb experiment
-					for(int exp = 0; exp < perturbExperiments; exp++){
-						//Calls the mutation method 
-						newState = this.mutation.doMutation(state);
-						//Gets the new state's attractor
-						attractorNewState = attractorsFinder.getAttractor(newState);
-						
-						//Computes the avalanches and the sensitivity if required.
-						if(this.dynamicPerturbsComputation){
-							dynamicPerturbationsStatistics.avalanchesAndSensitivityComputation(statesInAttractor, 
-									this.attractorsFinder.getStatesInAttractor(attractorNewState));
-						}
-						
-						if(attractorNewState != null){
-					
-							//Verifies if the attractor has already been discovered.
-							if(attractorVet.contains(attractorNewState) == true){
-			
-								//Gets the new state's index from the attractor's ArrayList
-								//and modifies the Atm matrix
-								this.atm[a][attractorVet.indexOf(attractorNewState)] = this.atm[a][attractorVet.indexOf(attractorNewState)] + 1.0;
-							}else{
-								//Adds the new attractors and modifies the Atm matrix
-								reCreateAtm(attractorsFinder.getAttractors());
-								attractorVet.add(attractorNewState);
-								this.atm[a][attractorVet.indexOf(attractorNewState)] = this.atm[a][attractorVet.indexOf(attractorNewState)] + 1.0;
-								numberOfAttractors = numberOfAttractors + 1;
-							}
-						}else{
-							System.out.println("No attractor found");
-						}
+
+			//Gets a permutation of the states in the selected attractor
+			statesInAttractor = UtilityRandom.randomPermutation(
+					this.attractorsFinder.getStatesInAttractor(attractorVet.get(a)));
+			index = 0;
+			Object state;
+			do{
+				state = statesInAttractor[index];
+				//Perform the perturb experiment
+				for(int exp = 0; exp < perturbExperiments; exp++){
+					//Calls the mutation method 
+					newState = this.mutation.doMutation(state);
+					//Gets the new state's attractor
+					attractorNewState = attractorsFinder.getAttractor(newState);
+
+					//Computes the avalanches and the sensitivity if required.
+					if(this.dynamicPerturbsComputation){
+						dynamicPerturbationsStatistics.avalanchesAndSensitivityComputation(statesInAttractor, 
+								this.attractorsFinder.getStatesInAttractor(attractorNewState));
 					}
-					index ++;
-					
-				}while(index < Math.floor(perturbStatesRatio * statesInAttractor.length));	
+
+					if(attractorNewState != null){
+
+						//Verifies if the attractor has already been discovered.
+						if(attractorVet.contains(attractorNewState) == true){
+
+							//Gets the new state's index from the attractor's ArrayList
+							//and modifies the Atm matrix
+							this.atm[a][attractorVet.indexOf(attractorNewState)] = this.atm[a][attractorVet.indexOf(attractorNewState)] + 1.0;
+						}else{
+							//Adds the new attractors and modifies the Atm matrix
+							reCreateAtm(attractorsFinder.getAttractors());
+							attractorVet.add(attractorNewState);
+							this.atm[a][attractorVet.indexOf(attractorNewState)] = this.atm[a][attractorVet.indexOf(attractorNewState)] + 1.0;
+							numberOfAttractors = numberOfAttractors + 1;
+						}
+					}else{
+						System.out.println("No attractor found");
+					}
+				}
+				index ++;
+
+			}while(index < Math.floor(perturbStatesRatio * statesInAttractor.length));	
 		}
-		
+
 		//Atm matrix normalization
 		this.normalize();
 		storeAtmNotMatching(this.atm);
 	}
-	
+
 	/**
 	 * This method recreates the Atm matrix when for a state there isn't its attractor
 	 * @param newAttractors : an array with all the attractors of the network
@@ -254,7 +256,7 @@ public class Atm {
 		}
 		return copiedDelta;
 	}
-	
+
 	/**
 	 * This method returns the atm matrix not normalized
 	 * @return the atm matrix not normalized
@@ -278,7 +280,7 @@ public class Atm {
 		}
 		return atmNotNormalized;
 	}
-	
+
 	/**
 	 * This method stores the not matching atms
 	 * @param atm the atm to store.
@@ -286,7 +288,7 @@ public class Atm {
 	public void storeAtmNotMatching(double[][] atm){
 		storedAtmNotMatching.add(atm);
 	}
-	
+
 	/**
 	 * This method returns the stored not matching atms
 	 * @return Atms
@@ -294,7 +296,7 @@ public class Atm {
 	public ArrayList<double[][]> getStoredAtmNotMaching(){
 		return storedAtmNotMatching;
 	}
-	
+
 	/***
 	 * This method returns the ATM in the tsv format
 	 */
@@ -310,7 +312,7 @@ public class Atm {
 			}
 			csvAtm += this.atm[i][this.atm.length-1];
 		}
-		
+
 		return csvAtm;
 	}
 
@@ -338,9 +340,81 @@ public class Atm {
 			}
 		}
 	}
-	
+
+	/**
+	 * This method returns the DynamicPerturbationStatistics object.
+	 * @return the DynamicPerturbationStatistics object.
+	 */
 	public DynamicPerturbationsStatistics getDynamicPerturbationsStatistics(){
 		return this.dynamicPerturbationsStatistics;
 	}
+
+	/**
+	 * This method returns the number of TESes for a given threshold
+	 * @param threshold: The transition probability threshold. It must be between 0 and 1;
+	 * @return The number of TES.
+	 */
+	public int getTesNumber(double threshold){
+		int tes = 0;
+		int[] assignments, temporaryTesSet;
+		ArrayList<ArrayList<Integer>> supportGraph = new ArrayList<ArrayList<Integer>>();
+		//Param checking
+		if(threshold < 0.0){
+			threshold = 0.0;
+		}else if(threshold > 1.0){
+			threshold = 1.0;
+		}
+
+		//Creates the atm graph
+		for(int i = 0; i < this.atm.length; i++){
+			supportGraph.add(i, new ArrayList<Integer>());
+			for(int j = 0; j < this.atm.length; j++){
+				if(this.atm[i][j] >= threshold){
+					supportGraph.get(i).add(j);
+				}
+			}
+		}
+
+		//Computes the SCC
+		SCCTarjan scc = new SCCTarjan();
+		ArrayList<ArrayList<Integer>> aux = scc.scc(supportGraph);
+
+		//Creates the assignments array. 
+		//Each position of the array contains the number of the scc of the element.
+		assignments = new int[this.atm.length];
+		for(int i  = 0; i < aux.size(); i++){
+			for(Integer att : aux.get(i))
+				assignments[att] = i;
+		}
+
+		//All the scc are teses at the beginning.
+		temporaryTesSet = new int[aux.size()];
+		for(int i = 0; i < aux.size(); i++)
+			temporaryTesSet[i] = 1;
+		int j = 0;
+
+		//Removes the scc that are not tes.
+		for(int i = 0; i < this.atm.length; i++){
+			j = 0;
+			while((j < this.atm.length) && (this.atm[i][j] == 0 || (!((this.atm[i][j] >= threshold) && (assignments[i] != assignments[j])))) ){
+				j = j + 1;
+			}
+			if(j < this.atm.length){
+				temporaryTesSet[assignments[i]] = 0;
+			}
+		}
+
+		//Computes the number of teses.
+		for(int i = 0; i < temporaryTesSet.length; i++)
+			tes = tes + temporaryTesSet[i];
+
+		return tes;
+	}
+
 	
+	public Atm(double[][] atm){
+		this.atm = atm;
+	}
+
+
 }

@@ -211,8 +211,8 @@ public class PartialSampling extends BinarySamplingMethod {
 	}
 
 	/**
-	 * This method returns the basin of attractions of each attractors
-	 * @return HashMap(attractors,#transient)
+	 * This method returns the basin of attractions of each attractors.
+	 * @return An array list with each basin dimension.
 	 */
 	public ArrayList<Integer> getBasinOfAttraction(){
 		HashMap<String, Integer> basin = new HashMap<String, Integer>();

@@ -625,4 +625,5 @@ public class GraphManager {
 	public int getNodeNumber(String nodeName){
 		return this.geneRegulatoryNetwork.getNodeNumber(nodeName);
 	}
+	
 }

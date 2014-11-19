@@ -113,7 +113,7 @@ public abstract class BinarySamplingMethod implements AttractorsFinder {
 		ArrayList<String> statesInAttractor;
 		String newState;
 
-		double fluctuation = 0;
+		double fluctuation = 0.0;
 
 		//Checks the inputs type. In this implementation it must be String
 		if(!(attractor instanceof String))
@@ -152,14 +152,16 @@ public abstract class BinarySamplingMethod implements AttractorsFinder {
 
 	/**
 	 * This method returns for each attractor the percentage of nodes oscillating
-	 * @return HashMap<attractor,percentage>
+	 * @return the ratio of oscillating nodes of the network
 	 */
 	public double getOscillatingNodesRatio(){
-		double ratio = 0;
+		double ratio = 0.0;
+		double attractors = this.fluctuations.keySet().size();
 		for(String key : this.fluctuations.keySet()){
-			ratio += this.fluctuations.get(key);
+			ratio = ratio + this.fluctuations.get(key);
 		}
-		return ratio/(double)this.fluctuations.keySet().size();
+		//Returns the ratio of oscillating nodes of the network.
+		return ratio/attractors;
 
 	}
 
