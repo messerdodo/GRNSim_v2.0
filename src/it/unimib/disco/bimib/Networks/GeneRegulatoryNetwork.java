@@ -164,7 +164,7 @@ public interface GeneRegulatoryNetwork {
 
 	/**
 	 * This method returns the function value for a specified node with a specified input.
-	 * @param node: The node name.
+	 * @param node: The id of the node in which the function has to be calculated.
 	 * @param input: The function input (One input for each incoming edge)
 	 * @return function: The node associated function.
 	 * @throws NotExistingNodeException: The specified node doesn't exist.

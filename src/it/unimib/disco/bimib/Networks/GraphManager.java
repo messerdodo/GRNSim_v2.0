@@ -14,6 +14,7 @@ package it.unimib.disco.bimib.Networks;
 import java.util.ArrayList;
 import java.util.Properties;
 
+
 //GRNSim imports
 import it.unimib.disco.bimib.Utility.*;
 import it.unimib.disco.bimib.Exceptions.*;
@@ -51,7 +52,7 @@ public class GraphManager {
 
 		int nodes, edges, averageConnectivity, ni, fixedInputsNumber;
 		float beta;
-		double randomRate = 0, biasRate = 0, andRate = 0, orRate = 0, canalizedRate = 0, biasValue, gamma;
+		double randomRate = 0, biasRate = 0, andRate = 0, orRate = 0, canalizedRate = 0, biasValue = 0.5, gamma;
 		boolean completelyDefined;
 		Function[] functions;
 
@@ -61,9 +62,13 @@ public class GraphManager {
 		nodes = Integer.valueOf(simulationFeatures.get(SimulationFeaturesConstants.NODES).toString());
 
 		//Checks the topology
+		if(!simulationFeatures.containsKey(SimulationFeaturesConstants.TOPOLOGY))
+			throw new ParamDefinitionException(SimulationFeaturesConstants.TOPOLOGY + " value missed");
 		//RANDOM TOPOLOGY
 		if(simulationFeatures.get(SimulationFeaturesConstants.TOPOLOGY).equals(SimulationFeaturesConstants.RANDOM_TOPOLOGY)){
 			//Gets the edges (required parameter for random topology)
+			if(!simulationFeatures.containsKey(SimulationFeaturesConstants.EDGES))
+				throw new ParamDefinitionException(SimulationFeaturesConstants.EDGES + " value missed");
 			edges = Integer.valueOf(simulationFeatures.get(SimulationFeaturesConstants.EDGES).toString());
 			//Creates the random network using the Erdos Renyi
 			this.geneRegulatoryNetwork = new RandomGraph(nodes, edges);
@@ -80,10 +85,12 @@ public class GraphManager {
 				if(!simulationFeatures.containsKey(SimulationFeaturesConstants.NI))
 					throw new ParamDefinitionException("Initial nodes parameter missed");
 				ni = Integer.valueOf(simulationFeatures.get(SimulationFeaturesConstants.NI).toString());
+				
 				if(!simulationFeatures.containsKey(SimulationFeaturesConstants.AVERAGE_CONNECTIVITY))
 					throw new ParamDefinitionException("Average connectivity parameter missed");
 				averageConnectivity = Integer.valueOf(simulationFeatures.get(SimulationFeaturesConstants.AVERAGE_CONNECTIVITY).toString());
-
+				if(averageConnectivity < 1 || averageConnectivity >= nodes)
+					throw new ParamDefinitionException(SimulationFeaturesConstants.AVERAGE_CONNECTIVITY + " value must be between 1 and nodes - 1");
 				//Creates the graph which follows the Barabasi Albertz Model
 				this.geneRegulatoryNetwork = new ScaleFreeGraph(ni, nodes, averageConnectivity);
 
@@ -112,8 +119,14 @@ public class GraphManager {
 			//SMALL WORLD TOPOLOGY
 		}else if(simulationFeatures.get(SimulationFeaturesConstants.TOPOLOGY).equals(SimulationFeaturesConstants.SMALL_WORLD_TOPOLOGY)){
 			//Gets the average connectivity 
+			if(!simulationFeatures.containsKey(SimulationFeaturesConstants.AVERAGE_CONNECTIVITY))
+				throw new ParamDefinitionException(SimulationFeaturesConstants.AVERAGE_CONNECTIVITY + " value missed");
 			averageConnectivity = Integer.valueOf(simulationFeatures.get(SimulationFeaturesConstants.AVERAGE_CONNECTIVITY).toString());
+			if(averageConnectivity < 1 || averageConnectivity >= nodes)
+				throw new ParamDefinitionException(SimulationFeaturesConstants.AVERAGE_CONNECTIVITY + " value must be between 1 and nodes - 1");
 			//Gets the beta parameter
+			if(!simulationFeatures.containsKey(SimulationFeaturesConstants.BETA))
+				throw new ParamDefinitionException(SimulationFeaturesConstants.BETA + " value missed");
 			beta = Float.valueOf(simulationFeatures.get(SimulationFeaturesConstants.BETA).toString());
 			//Creates the small world graph following the Strogatz model
 			this.geneRegulatoryNetwork = new SmallWorldGraph(nodes, averageConnectivity, beta);
@@ -124,13 +137,11 @@ public class GraphManager {
 			if(!simulationFeatures.containsKey(SimulationFeaturesConstants.FIXED_INPUTS_NUMBER))
 				throw new FeaturesException(SimulationFeaturesConstants.FIXED_INPUTS_NUMBER + " feature required.");
 			fixedInputsNumber = Integer.valueOf(simulationFeatures.get(SimulationFeaturesConstants.FIXED_INPUTS_NUMBER).toString());
+			if(fixedInputsNumber < 1 || fixedInputsNumber > nodes - 1)
+				throw new FeaturesException(SimulationFeaturesConstants.FIXED_INPUTS_NUMBER + " value must be between 1 and nodes - 1.");
 			//Creates the network with the selected topology.
 			this.geneRegulatoryNetwork = new PartiallyRandomGraph(nodes, fixedInputsNumber);
 			//HIERARCHICAL TOPOLOGY
-		}else if(simulationFeatures.get(SimulationFeaturesConstants.TOPOLOGY).equals(SimulationFeaturesConstants.HIERARCHICAL_TOPOLOGY)){
-
-			//To be implemented soon
-
 		}else{
 			throw new ParamDefinitionException("Not supported topology");
 		}
@@ -138,27 +149,49 @@ public class GraphManager {
 
 		//Functions generation
 		//Boolean functions
+		if(!simulationFeatures.containsKey(SimulationFeaturesConstants.FUNCTION_TYPE))
+			throw new ParamDefinitionException(SimulationFeaturesConstants.FUNCTION_TYPE + " value missed");
 		if(simulationFeatures.get(SimulationFeaturesConstants.FUNCTION_TYPE).equals(SimulationFeaturesConstants.BOOLEAN_FUNCTION)){
 
 			//Creates the boolean function array
 			functions = new BooleanFunction[nodes];
 
 			//Random type functions
-			if(simulationFeatures.containsKey(SimulationFeaturesConstants.RANDOM_TYPE))
+			if(simulationFeatures.containsKey(SimulationFeaturesConstants.RANDOM_TYPE)){
 				randomRate = Double.valueOf(simulationFeatures.get(SimulationFeaturesConstants.RANDOM_TYPE).toString());
+				if(randomRate < 0 || randomRate > 1)
+					throw new ParamDefinitionException(SimulationFeaturesConstants.RANDOM_TYPE + " value must be between 0 and 1");
+			}
 			//Random bias type functions
-			if(simulationFeatures.containsKey(SimulationFeaturesConstants.BIAS_TYPE))
+			if(simulationFeatures.containsKey(SimulationFeaturesConstants.BIAS_TYPE)){
 				biasRate = Double.valueOf(simulationFeatures.get(SimulationFeaturesConstants.BIAS_TYPE).toString());
-			biasValue = Double.valueOf(simulationFeatures.get(SimulationFeaturesConstants.BIAS_VALUE).toString());
+				if(biasRate < 0 || biasRate > 1)
+					throw new ParamDefinitionException(SimulationFeaturesConstants.BIAS_TYPE + " value must be between 0 and 1");
+				if(!simulationFeatures.containsKey(SimulationFeaturesConstants.BIAS_VALUE))
+					throw new ParamDefinitionException(SimulationFeaturesConstants.BIAS_VALUE + " value missed");
+				biasValue = Double.valueOf(simulationFeatures.get(SimulationFeaturesConstants.BIAS_VALUE).toString());
+				if(biasValue < 0 || biasValue > 1)
+					throw new ParamDefinitionException(SimulationFeaturesConstants.BIAS_VALUE + " value must be between 0 and 1");
+			}
+			
 			//And type functions
-			if(simulationFeatures.containsKey(SimulationFeaturesConstants.AND_FUNCTION_TYPE))
+			if(simulationFeatures.containsKey(SimulationFeaturesConstants.AND_FUNCTION_TYPE)){
 				andRate = Double.valueOf(simulationFeatures.get(SimulationFeaturesConstants.AND_FUNCTION_TYPE).toString());
+				if(andRate < 0 || andRate > 1)
+					throw new ParamDefinitionException(SimulationFeaturesConstants.AND_FUNCTION_TYPE + " value must be between 0 and 1");
+			}
 			//Or type functions
-			if(simulationFeatures.containsKey(SimulationFeaturesConstants.OR_FUNCTION_TYPE))
+			if(simulationFeatures.containsKey(SimulationFeaturesConstants.OR_FUNCTION_TYPE)){
 				orRate = Double.valueOf(simulationFeatures.get(SimulationFeaturesConstants.OR_FUNCTION_TYPE).toString());
+				if(orRate < 0 || orRate > 1)
+					throw new ParamDefinitionException(SimulationFeaturesConstants.OR_FUNCTION_TYPE + " value must be between 0 and 1");
+			}
 			//Canalized functions
-			if(simulationFeatures.containsKey(SimulationFeaturesConstants.CANALIZED_TYPE))
+			if(simulationFeatures.containsKey(SimulationFeaturesConstants.CANALIZED_TYPE)){
 				canalizedRate = Double.valueOf(simulationFeatures.get(SimulationFeaturesConstants.CANALIZED_TYPE).toString());
+				if(canalizedRate < 0 || canalizedRate > 1)
+					throw new ParamDefinitionException(SimulationFeaturesConstants.CANALIZED_TYPE + " value must be between 0 and 1");
+			}
 
 			if(!simulationFeatures.containsKey(SimulationFeaturesConstants.COMPLETELY_DEFINED_FUNCTIONS))
 				throw new MissingFeaturesException(SimulationFeaturesConstants.COMPLETELY_DEFINED_FUNCTIONS + " key must be specified");
@@ -170,39 +203,43 @@ public class GraphManager {
 				throw new ParamDefinitionException("The sum of the rates must be 1");
 
 			int createdFunctions = 0;
-
+			Integer[] functionsNumber = new Integer[nodes];
+			for(int i = 0; i < nodes; i++)
+				functionsNumber[i] = i;
+			functionsNumber = (Integer[]) UtilityRandom.randomPermutation(functionsNumber);
+			
 			//Creates the random functions
 			for(int i = 0; i < Math.floor(randomRate * nodes); i++){
-				functions[createdFunctions] = new RandomFunction(
-						geneRegulatoryNetwork.getIncomingNodes(createdFunctions), completelyDefined);
+				functions[functionsNumber[createdFunctions]] = new RandomFunction(
+						geneRegulatoryNetwork.getIncomingNodes(functionsNumber[createdFunctions]), completelyDefined);
 				createdFunctions++;
 			}
 
 			//Creates the bias random functions
 			for(int i = 0; i < Math.floor(biasRate * nodes); i++){
-				functions[createdFunctions] = new RandomFunction(
-						geneRegulatoryNetwork.getIncomingNodes(createdFunctions), biasValue, completelyDefined);
+				functions[functionsNumber[createdFunctions]] = new RandomFunction(
+						geneRegulatoryNetwork.getIncomingNodes(functionsNumber[createdFunctions]), biasValue, completelyDefined);
 				createdFunctions++;
 			}
 
 			//Creates the or functions
 			for(int i = 0; i < Math.floor(orRate * nodes); i++){
-				functions[createdFunctions] = new AndOrFunction(false,
-						geneRegulatoryNetwork.getIncomingNodes(createdFunctions));
+				functions[functionsNumber[createdFunctions]] = new AndOrFunction(false,
+						geneRegulatoryNetwork.getIncomingNodes(functionsNumber[createdFunctions]));
 				createdFunctions++;
 			}
 
 			//Creates the and functions
 			for(int i = 0; i < Math.floor(andRate * nodes); i++){
-				functions[createdFunctions] = new AndOrFunction(true,
-						geneRegulatoryNetwork.getIncomingNodes(createdFunctions));
+				functions[functionsNumber[createdFunctions]] = new AndOrFunction(true,
+						geneRegulatoryNetwork.getIncomingNodes(functionsNumber[createdFunctions]));
 				createdFunctions++;
 			}
 
 			//Creates the canalized functions
 			for(int i = 0; i < Math.floor(canalizedRate * nodes); i++){
-				functions[createdFunctions] = new CanalizedFunction(
-						geneRegulatoryNetwork.getIncomingNodes(createdFunctions),completelyDefined);
+				functions[functionsNumber[createdFunctions]] = new CanalizedFunction(
+						geneRegulatoryNetwork.getIncomingNodes(functionsNumber[createdFunctions]),completelyDefined);
 				createdFunctions++;
 			}
 
@@ -215,28 +252,28 @@ public class GraphManager {
 				if(maxRate == randomRate){
 					//Creates the other random functions
 					for(; createdFunctions < nodes; createdFunctions++)
-						functions[createdFunctions] = new RandomFunction(
-								geneRegulatoryNetwork.getIncomingNodes(createdFunctions), completelyDefined);
+						functions[functionsNumber[createdFunctions]] = new RandomFunction(
+								geneRegulatoryNetwork.getIncomingNodes(functionsNumber[createdFunctions]), completelyDefined);
 				}else if(maxRate == biasRate){
 					//Creates the other bias random functions
 					for(; createdFunctions < nodes; createdFunctions++)
-						functions[createdFunctions] = new RandomFunction(
-								geneRegulatoryNetwork.getIncomingNodes(createdFunctions), biasValue, completelyDefined);
+						functions[functionsNumber[createdFunctions]] = new RandomFunction(
+								geneRegulatoryNetwork.getIncomingNodes(functionsNumber[createdFunctions]), biasValue, completelyDefined);
 				}else if(maxRate == andRate){
 					//Creates the other and functions
 					for(; createdFunctions < nodes; createdFunctions++)
-						functions[createdFunctions] = new AndOrFunction(true,
-								geneRegulatoryNetwork.getIncomingNodes(createdFunctions));
+						functions[functionsNumber[createdFunctions]] = new AndOrFunction(true,
+								geneRegulatoryNetwork.getIncomingNodes(functionsNumber[createdFunctions]));
 				}else if(maxRate == orRate){
 					//Creates the other or functions
 					for(; createdFunctions < nodes; createdFunctions++)
-						functions[createdFunctions] = new AndOrFunction(false,
-								geneRegulatoryNetwork.getIncomingNodes(createdFunctions));
+						functions[functionsNumber[createdFunctions]] = new AndOrFunction(false,
+								geneRegulatoryNetwork.getIncomingNodes(functionsNumber[createdFunctions]));
 				}else if(maxRate == canalizedRate){
 					//Creates the other or functions
 					for(; createdFunctions < nodes; createdFunctions++)
-						functions[createdFunctions] = new CanalizedFunction(
-								geneRegulatoryNetwork.getIncomingNodes(createdFunctions), completelyDefined);
+						functions[functionsNumber[createdFunctions]] = new CanalizedFunction(
+								geneRegulatoryNetwork.getIncomingNodes(functionsNumber[createdFunctions]), completelyDefined);
 				}
 
 				//BIOLOGICAL FUNCTIONS TO BE IMPLEMENTED SOON
@@ -248,7 +285,7 @@ public class GraphManager {
 			geneRegulatoryNetwork.addFunctions(functions);
 
 		}else{
-			System.err.println("Not supported function type");
+			throw new ParamDefinitionException("Not supported function type");
 		}		
 	}
 
@@ -398,21 +435,41 @@ public class GraphManager {
 		if(features.get(SimulationFeaturesConstants.FUNCTION_TYPE).equals(SimulationFeaturesConstants.BOOLEAN_FUNCTION)){
 
 			//Random type functions
-			if(features.containsKey(SimulationFeaturesConstants.RANDOM_TYPE))
+			if(features.containsKey(SimulationFeaturesConstants.RANDOM_TYPE)){
 				randomRate = Double.valueOf(features.get(SimulationFeaturesConstants.RANDOM_TYPE).toString());
+				if(randomRate < 0 || randomRate > 1)
+					throw new ParamDefinitionException(SimulationFeaturesConstants.RANDOM_TYPE + " value must be between 0 and 1");
+			}
 			//Random bias type functions
-			if(features.containsKey(SimulationFeaturesConstants.BIAS_TYPE))
+			if(features.containsKey(SimulationFeaturesConstants.BIAS_TYPE)){
 				biasRate = Double.valueOf(features.get(SimulationFeaturesConstants.BIAS_TYPE).toString());
-			biasValue = Double.valueOf(features.get(SimulationFeaturesConstants.BIAS_VALUE).toString());
+				if(biasRate < 0 || biasRate > 1)
+					throw new ParamDefinitionException(SimulationFeaturesConstants.BIAS_TYPE + " value must be between 0 and 1");
+				if(!features.containsKey(SimulationFeaturesConstants.BIAS_VALUE))
+					throw new ParamDefinitionException(SimulationFeaturesConstants.BIAS_VALUE + " value missed");
+				biasValue = Double.valueOf(features.get(SimulationFeaturesConstants.BIAS_VALUE).toString());
+				if(biasValue < 0 || biasValue > 1)
+					throw new ParamDefinitionException(SimulationFeaturesConstants.BIAS_VALUE + " value must be between 0 and 1");
+			}
+			
 			//And type functions
-			if(features.containsKey(SimulationFeaturesConstants.AND_FUNCTION_TYPE))
+			if(features.containsKey(SimulationFeaturesConstants.AND_FUNCTION_TYPE)){
 				andRate = Double.valueOf(features.get(SimulationFeaturesConstants.AND_FUNCTION_TYPE).toString());
+				if(andRate < 0 || andRate > 1)
+					throw new ParamDefinitionException(SimulationFeaturesConstants.AND_FUNCTION_TYPE + " value must be between 0 and 1");
+			}
 			//Or type functions
-			if(features.containsKey(SimulationFeaturesConstants.OR_FUNCTION_TYPE))
+			if(features.containsKey(SimulationFeaturesConstants.OR_FUNCTION_TYPE)){
 				orRate = Double.valueOf(features.get(SimulationFeaturesConstants.OR_FUNCTION_TYPE).toString());
+				if(orRate < 0 || orRate > 1)
+					throw new ParamDefinitionException(SimulationFeaturesConstants.OR_FUNCTION_TYPE + " value must be between 0 and 1");
+			}
 			//Canalized functions
-			if(features.containsKey(SimulationFeaturesConstants.CANALIZED_TYPE))
+			if(features.containsKey(SimulationFeaturesConstants.CANALIZED_TYPE)){
 				canalizedRate = Double.valueOf(features.get(SimulationFeaturesConstants.CANALIZED_TYPE).toString());
+				if(canalizedRate < 0 || canalizedRate > 1)
+					throw new ParamDefinitionException(SimulationFeaturesConstants.CANALIZED_TYPE + " value must be between 0 and 1");
+			}
 
 
 			//Checks if the rates are correct. The sum must be 1
@@ -427,9 +484,9 @@ public class GraphManager {
 					undefinedFunctions.add(i);
 				}
 			}
-
+			//Functions permutation
+			undefinedFunctions = UtilityRandom.randomPermutation(undefinedFunctions);
 			
-
 			int createdFunctions = 0;
 			boolean completelyDefined = features.getProperty(SimulationFeaturesConstants.COMPLETELY_DEFINED_FUNCTIONS).equals(SimulationFeaturesConstants.YES);
 
@@ -625,5 +682,4 @@ public class GraphManager {
 	public int getNodeNumber(String nodeName){
 		return this.geneRegulatoryNetwork.getNodeNumber(nodeName);
 	}
-	
 }

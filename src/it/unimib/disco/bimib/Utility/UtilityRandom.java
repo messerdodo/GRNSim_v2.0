@@ -1,23 +1,18 @@
-package it.unimib.disco.bimib.Utility;
-
-import java.util.ArrayList;
-import java.util.Collections;
-
-import it.unimib.disco.bimib.Exceptions.ParamDefinitionException;
-
-
-/**
- * BIMIB @ Milan University - Bicocca 
- * 2013
- */
-
 /**
  * This class implements the common random functions.
- * 
  * @author Andrea Paroni (a.paroni@campus.unimib.it)
  * @author Giorgia Previtali (g.previtali6@campus.unimib.it)
+ * @group BIMIB @ DISCo (Department of Information Technology, Systems and Communication) of Milan University - Bicocca 
+ * @year 2014
  * 
  */
+package it.unimib.disco.bimib.Utility;
+
+//System imports
+import java.util.ArrayList;
+import java.util.Collections;
+//GRNSim imports
+import it.unimib.disco.bimib.Exceptions.ParamDefinitionException;
 
 public class UtilityRandom {
 
@@ -266,6 +261,27 @@ public class UtilityRandom {
 			swap = array[i];
 			array[i] = array[index];
 			array[index] = swap;
+		}
+		return array;
+	}
+	
+	/**
+	 * This method returns a permutation of the passed array.
+	 * @param array: An object array list
+	 * @return  permutation of the passed array.
+	 */
+	public static ArrayList<Integer> randomPermutation(ArrayList<Integer> array){
+		if(array == null)
+			throw new NullPointerException("The array must be not null");
+		
+		Integer swap;
+		int index;
+		//Performs a permutation of the array
+		for(int i = 0; i < array.size() - 1; i++){
+			index = randomUniform(i + 1, array.size() - 1);
+			swap = array.get(i);
+			array.set(i, array.get(index));
+			array.set(index, swap);
 		}
 		return array;
 	}

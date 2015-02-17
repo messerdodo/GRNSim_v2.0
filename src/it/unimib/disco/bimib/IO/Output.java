@@ -85,11 +85,12 @@ public class Output {
 		PrintWriter printer = new PrintWriter(writer);
 		//Gets the edges
 		List<int[]> graphEdges = network.getEdges();
+		ArrayList<String> nodesNames = network.getNodesNames();
 
 		//Writes the sif file
 		for(int[] edge : graphEdges){
 			//Each rows likes "n	_connected	m" where n and m are node numbers 
-			printer.println("Node"+ edge[0] + "\tDirectedEdge\t" + "Node" + edge[1]);
+			printer.println(nodesNames.get(edge[0]) + "\tDirectedEdge\t" + nodesNames.get(edge[1]));
 			printer.flush();
 		}
 		//Closes the streams
